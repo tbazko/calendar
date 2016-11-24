@@ -36,12 +36,13 @@ class HighlighterPresenter {
 		});
 	}
 
+	// TODO: Check what's up with recursion
 	highlight(direction) {
-		if (direction === 0) {
-			this.calendar.currentMonth();
-			this.highlight();
-			console.log(new Date(this.model.firstDayStamp));
-		}
+		// if (direction === 0) {
+		// 	this.calendar.currentMonth();
+		// 	this.highlight();
+		// 	console.log(new Date(this.model.firstDayStamp));
+		// }
 
 		this.calendar.setClassOnElement('is_highlighted_first', this.model.firstDayStamp, function noElementFound() {
 			if (direction === 1) {
@@ -62,18 +63,14 @@ class HighlighterPresenter {
 	}
 
 	bindEvents() {
-		this.view.dayViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, new DayState(this.model)), false);
-		this.view.weekViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, new WeekState(this.model)), false);
-		this.view.monthViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, new MonthState(this.model)), false);
+		this.view.dayViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, DayState), false);
+		this.view.weekViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, WeekState), false);
+		this.view.monthViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, MonthState), false);
 		this.view.prevDatesRangeTrigger.addEventListener('click', this.onDatesRangeClick.bind(this, -1), false);
 		this.view.nextDatesRangeTrigger.addEventListener('click', this.onDatesRangeClick.bind(this, 1), false);
 
 		for (var i = 0; i < this.view.lastDaysViewTriggers.length; i++) {
-			this.view.lastDaysViewTriggers[i].addEventListener('click', function (e) {
-				var target = e.target || e.currentTarget;
-				var daysCount = target.getAttribute('data-days-count');
-				this.onViewTriggerClick(new DaysState(this.model, daysCount), e);
-			}.bind(this));
+			this.view.lastDaysViewTriggers[i].addEventListener('click', this.onViewTriggerClick.bind(this, DaysState), false);
 		}
 	}
 
@@ -85,12 +82,15 @@ class HighlighterPresenter {
 	}
 
 	onViewTriggerClick(newState, e) {
-		if (this.model.currentState == newState) {
+		var target = e.target || e.currentTarget,
+			daysCount = target.getAttribute('data-days-count'),
+			state = daysCount ? new newState(this.model, daysCount) : new newState(this.model);
+
+		if (this.model.currentState == state) {
 			return;
 		}
-		var target = e.target || e.currentTarget;
 		this.removeHighlight();
-		this.model.currentState = newState;
+		this.model.currentState = state;
 		this.renderView(target);
 		this.highlight(0);
 	}

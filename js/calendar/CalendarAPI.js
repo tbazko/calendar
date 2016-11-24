@@ -41,8 +41,9 @@ class CalendarAPI {
 
 	static today() {
 		var date = new Date(),
-			month = date.getMonth(),
-			today = new Date(date.getFullYear(), month, date.getDate(), 0, 0, 0, 0);
+			month = date.getMonth();
+		date.setHours(0);
+		var today = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 		today.monthName = this.getMonthName(month).name;
 		return today;
 	}

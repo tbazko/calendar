@@ -34,12 +34,7 @@ class DayState {
 	}
 
 	changeDatesRange(direction) {
-
-		var first = new Date(this.firstDayStamp + 60 * 60 * 24 * 1000 * direction);
-
-		// To make sure day starts from 00:00:00 (due to Day Light Saving Time
-		// you get +/- additional hour in specific monthes in some countries)
-		this.firstDayStamp = new Date(first.getFullYear(), first.getMonth(), first.getDate(), 0, 0, 0, 0).getTime();
+		this.firstDayStamp = this.firstDayStamp + 60 * 60 * 24 * 1000 * direction;
 		this.lastDayStamp = this.firstDayStamp;
 	}
 

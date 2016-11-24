@@ -46,8 +46,9 @@ var CalendarAPI = (function () {
 
 	CalendarAPI.today = function today() {
 		var date = new Date(),
-		    month = date.getMonth(),
-		    today = new Date(date.getFullYear(), month, date.getDate(), 0, 0, 0, 0);
+		    month = date.getMonth();
+		date.setHours(0);
+		var today = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 		today.monthName = this.getMonthName(month).name;
 		return today;
 	};
@@ -237,14 +238,19 @@ var MonthModel = (function (_CalendarModel) {
 
 	MonthModel.prototype._generateDates = function _generateDates(start, end, month, year) {
 		var dates = [],
-		    todayStamp = this.today.getTime();
+		   
+		// y = this.today.getFullYear(),
+		// m = this.today.getMonth(),
+		// d = this.today.getDate(),
+		todayStampUTC = this.today.getTime();
 
 		for (var i = start; i <= end; i++) {
-			var stamp = new Date(year, month, i).getTime();
+			var stampUTC = new Date(Date.UTC(year, month, i)).getTime();
+
 			dates.push({
 				date: i,
-				timestamp: stamp,
-				isToday: todayStamp === stamp ? true : false
+				timestampUTC: stampUTC,
+				isToday: todayStampUTC === stampUTC ? true : false
 			});
 		}
 		return dates;
@@ -419,7 +425,7 @@ var MonthPresenter = (function (_CalendarPresenter) {
 
 		for (var i = 0, x = dates.length; i < x; i++) {
 			child = document.createElement('div');
-			child.id = dates[i].timestamp;
+			child.id = dates[i].timestampUTC;
 			child.textContent = dates[i].date;
 
 			if (dates[i].isToday) {
@@ -604,12 +610,7 @@ var DayState = (function () {
 	}
 
 	DayState.prototype.changeDatesRange = function changeDatesRange(direction) {
-
-		var first = new Date(this.firstDayStamp + 60 * 60 * 24 * 1000 * direction);
-
-		// To make sure day starts from 00:00:00 (due to Day Light Saving Time
-		// you get +/- additional hour in specific monthes in some countries)
-		this.firstDayStamp = new Date(first.getFullYear(), first.getMonth(), first.getDate(), 0, 0, 0, 0).getTime();
+		this.firstDayStamp = this.firstDayStamp + 60 * 60 * 24 * 1000 * direction;
 		this.lastDayStamp = this.firstDayStamp;
 	};
 
@@ -787,32 +788,19 @@ var WeekState = (function () {
 		_classCallCheck(this, WeekState);
 
 		this.model = highlightModel;
-		var currentWeek = this._getWeekOfStamp(this.model.today.getTime());
-		this.firstDay = currentWeek.firstDay;
-		this.lastDay = currentWeek.lastDay;
+		this._setFirstAndLastDay(this.model.today.getTime());
 	}
 
 	WeekState.prototype.changeDatesRange = function changeDatesRange(direction) {
 		var step = 60 * 60 * 24 * 7 * 1000;
 		this.firstDay = new Date(this.firstDayStamp + step * direction);
-		this.firstDay.setHours(0);
 		this.lastDay = new Date(this.lastDayStamp + step * direction);
-		this.lastDay.setHours(0);
-		console.log(this.firstDay);
-		console.log(this.lastDay);
 	};
 
-	WeekState.prototype._getWeekOfStamp = function _getWeekOfStamp(timeStamp) {
+	WeekState.prototype._setFirstAndLastDay = function _setFirstAndLastDay(timeStamp) {
 		var dayOfWeek = new Date(timeStamp).getDay();
-		var firstDay = new Date(timeStamp - 60 * 60 * 24 * dayOfWeek * 1000);
-		var lastDay = new Date(firstDay.getTime() + 60 * 60 * 24 * 6 * 1000);
-		console.log(firstDay);
-		console.log(lastDay);
-
-		return {
-			firstDay: firstDay,
-			lastDay: lastDay
-		};
+		this.firstDay = new Date(timeStamp - 60 * 60 * 24 * dayOfWeek * 1000);
+		this.lastDay = new Date(this.firstDay.getTime() + 60 * 60 * 24 * 6 * 1000);
 	};
 
 	_createClass(WeekState, [{
@@ -901,12 +889,14 @@ var HighlighterPresenter = (function () {
 		});
 	};
 
+	// TODO: Check what's up with recursion
+
 	HighlighterPresenter.prototype.highlight = function highlight(direction) {
-		if (direction === 0) {
-			this.calendar.currentMonth();
-			this.highlight();
-			console.log(new Date(this.model.firstDayStamp));
-		}
+		// if (direction === 0) {
+		// 	this.calendar.currentMonth();
+		// 	this.highlight();
+		// 	console.log(new Date(this.model.firstDayStamp));
+		// }
 
 		this.calendar.setClassOnElement('is_highlighted_first', this.model.firstDayStamp, (function noElementFound() {
 			if (direction === 1) {
@@ -927,18 +917,14 @@ var HighlighterPresenter = (function () {
 	};
 
 	HighlighterPresenter.prototype.bindEvents = function bindEvents() {
-		this.view.dayViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, new DayState(this.model)), false);
-		this.view.weekViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, new WeekState(this.model)), false);
-		this.view.monthViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, new MonthState(this.model)), false);
+		this.view.dayViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, DayState), false);
+		this.view.weekViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, WeekState), false);
+		this.view.monthViewTrigger.addEventListener('click', this.onViewTriggerClick.bind(this, MonthState), false);
 		this.view.prevDatesRangeTrigger.addEventListener('click', this.onDatesRangeClick.bind(this, -1), false);
 		this.view.nextDatesRangeTrigger.addEventListener('click', this.onDatesRangeClick.bind(this, 1), false);
 
 		for (var i = 0; i < this.view.lastDaysViewTriggers.length; i++) {
-			this.view.lastDaysViewTriggers[i].addEventListener('click', (function (e) {
-				var target = e.target || e.currentTarget;
-				var daysCount = target.getAttribute('data-days-count');
-				this.onViewTriggerClick(new DaysState(this.model, daysCount), e);
-			}).bind(this));
+			this.view.lastDaysViewTriggers[i].addEventListener('click', this.onViewTriggerClick.bind(this, DaysState), false);
 		}
 	};
 
@@ -950,12 +936,15 @@ var HighlighterPresenter = (function () {
 	};
 
 	HighlighterPresenter.prototype.onViewTriggerClick = function onViewTriggerClick(newState, e) {
-		if (this.model.currentState == newState) {
+		var target = e.target || e.currentTarget,
+		    daysCount = target.getAttribute('data-days-count'),
+		    state = daysCount ? new newState(this.model, daysCount) : new newState(this.model);
+
+		if (this.model.currentState == state) {
 			return;
 		}
-		var target = e.target || e.currentTarget;
 		this.removeHighlight();
-		this.model.currentState = newState;
+		this.model.currentState = state;
 		this.renderView(target);
 		this.highlight(0);
 	};

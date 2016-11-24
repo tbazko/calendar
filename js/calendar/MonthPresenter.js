@@ -83,7 +83,7 @@ class MonthPresenter extends CalendarPresenter {
 
 		for (var i = 0, x = dates.length; i < x; i++) {
 			child = document.createElement('div');
-			child.id = dates[i].timestamp;
+			child.id = dates[i].timestampUTC;
 			child.textContent = dates[i].date;
 
 			if (dates[i].isToday) {

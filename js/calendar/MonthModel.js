@@ -113,14 +113,15 @@ class MonthModel extends CalendarModel {
 
 	_generateDates(start, end, month, year) {
 		var dates = [],
-			todayStamp = this.today.getTime();
+			todayStampUTC = this.today.getTime();
 
 		for (var i = start; i <= end; i++) {
-			var stamp = new Date(year, month, i).getTime();
+			var stampUTC = new Date(Date.UTC(year, month, i)).getTime();
+
 			dates.push({
 				date: i,
-				timestamp: stamp,
-				isToday: todayStamp === stamp ? true : false
+				timestampUTC: stampUTC,
+				isToday: todayStampUTC === stampUTC ? true : false
 			});
 		}
 		return dates;
