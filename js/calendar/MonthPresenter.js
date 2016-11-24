@@ -1,3 +1,4 @@
+const polyfill = require('./customEventsPolyfill');
 const MonthModel = require('./MonthModel');
 const MonthView = require('./MonthView');
 const CalendarPresenter = require('./CalendarPresenter');
@@ -25,12 +26,15 @@ class MonthPresenter extends CalendarPresenter {
 	currentMonth() {
 		this.model.monthToShow = this.model.currentMonth;
 		this.renderView();
+		var event = new CustomEvent("currentMonthRendered", {
+			bubbles: true
+		});
+		this.view.calendar.dispatchEvent(event);
 	}
 
 	// Public functions
 	setClassesOnElements(classesString, idsArray, callback) {
 		for (var i = 0, x = idsArray.length; i < x; i++) {
-			console.log(callback);
 			this.view.setClassOnElement(classesString, idsArray[i], callback);
 		}
 	}
@@ -39,9 +43,9 @@ class MonthPresenter extends CalendarPresenter {
 		this.view.setClassOnElement(classStr, id, callback);
 	}
 
-	removeClassesOnElements(classesString, idsArray, callback) {
+	removeClassesOnElements(classesString, idsArray) {
 		for (var i = 0, x = idsArray.length; i < x; i++) {
-			this.view.removeClassesOnElement(classesString, idsArray[i], callback);
+			this.view.removeClassesOnElement(classesString, idsArray[i]);
 		}
 	}
 
@@ -62,6 +66,10 @@ class MonthPresenter extends CalendarPresenter {
 			contentFragment = this.getDatesFragment(contentFragment);
 
 		this.view.render(this.model.monthToShow, contentFragment);
+		var event = new CustomEvent("newViewRendered", {
+			bubbles: true
+		});
+		this.view.calendar.dispatchEvent(event);
 	}
 
 	getShortDayNamesFragment(fragment) {

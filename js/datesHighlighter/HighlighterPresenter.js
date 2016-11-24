@@ -1,16 +1,15 @@
 const HighlighterModel = require('./HighlighterModel');
 const HighlighterView = require('./HighlighterView');
-const DayState = require('./HighlighterModelDayState');
-const WeekState = require('./HighlighterModelWeekState');
-const MonthState = require('./HighlighterModelMonthState');
-const DaysState = require('./HighlighterModelDaysState');
+const DayState = require('./ModelStates/DayState');
+const WeekState = require('./ModelStates/WeekState');
+const MonthState = require('./ModelStates/MonthState');
+const LastDaysState = require('./ModelStates/LastDaysState');
 
 class HighlighterPresenter {
 	constructor(document) {
 		this.document = document;
 		this.model = new HighlighterModel(DayState);
 		this.view = new HighlighterView(this.document);
-		// this.init();
 	}
 
 	connectTo(calendar) {
@@ -21,28 +20,21 @@ class HighlighterPresenter {
 	init() {
 		this.view.declareViewElements();
 		this.bindEvents();
+		this.bindCalendarEvents();
 		this.highlight();
 		this.renderView(this.view.dayViewTrigger);
 	}
 
 	removeHighlight() {
-		this.calendar.removeClassesOnElements('is_highlighted_first', [this.model.firstDayStamp, this.model.lastDayStamp], function () {
-			// this.calendar.nextMonth();
-			console.log('nothing to remove');
-		});
-		this.calendar.removeClassesOnElements('is_highlighted_last', [this.model.firstDayStamp, this.model.lastDayStamp], function () {
-			// this.calendar.nextMonth();
-			console.log('nothing to remove');
-		});
+		this.calendar.removeClassesOnElements('is_highlighted_first', [this.model.firstDayStamp, this.model.lastDayStamp]);
+		this.calendar.removeClassesOnElements('is_highlighted_last', [this.model.firstDayStamp, this.model.lastDayStamp]);
 	}
 
 	// TODO: Check what's up with recursion
 	highlight(direction) {
-		// if (direction === 0) {
-		// 	this.calendar.currentMonth();
-		// 	this.highlight();
-		// 	console.log(new Date(this.model.firstDayStamp));
-		// }
+		if (direction === 0) {
+			this.calendar.currentMonth();
+		}
 
 		this.calendar.setClassOnElement('is_highlighted_first', this.model.firstDayStamp, function noElementFound() {
 			if (direction === 1) {
@@ -70,8 +62,19 @@ class HighlighterPresenter {
 		this.view.nextDatesRangeTrigger.addEventListener('click', this.onDatesRangeClick.bind(this, 1), false);
 
 		for (var i = 0; i < this.view.lastDaysViewTriggers.length; i++) {
-			this.view.lastDaysViewTriggers[i].addEventListener('click', this.onViewTriggerClick.bind(this, DaysState), false);
+			this.view.lastDaysViewTriggers[i].addEventListener('click', this.onViewTriggerClick.bind(this, LastDaysState), false);
 		}
+	}
+
+	// Maybe use mediator?
+	bindCalendarEvents() {
+		this.document.addEventListener('newViewRendered', this.highlight.bind(this), false);
+		this.document.addEventListener('currentMonthRendered', this.onCalendarCurrentMonthView.bind(this), false);
+	}
+
+	onCalendarCurrentMonthView(e) {
+		this.model.resetDatesToDefault();
+		this.highlight();
 	}
 
 	onDatesRangeClick(direction) {

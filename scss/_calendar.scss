@@ -42,6 +42,8 @@ body, html {
 
 .navigation_header_month {
   position: relative;
+  display: flex;
+  justify-content: space-between;
   padding: 10px 0;
 }
 
@@ -57,8 +59,8 @@ body, html {
   background: #fefefe;
   width: auto;
   position: absolute;
-  margin-top: 15px;
-  left: 300px;
+  margin-top: 35px;
+  right: 0px;
   z-index: index($z-stack, calendar);
   transition: max-height .2s linear .2s, opacity .2s ease;
 
@@ -100,23 +102,41 @@ body, html {
     padding: 15px 5px;
     width: calc(100% / 7);
     font-size: 12px;
+    border: 2px solid transparent;
   }
 
   .is_today {
-    background: #f1f1f1;
-    color: #303030;
+    border: 2px solid #FFD40A;
   }
 
   .is_highlighted_first,
   .is_highlighted_last {
-    border: 1px solid green;
+    background: #555;
+    border: 2px solid #555;
+    color: #fff;
+
+    &.is_today {
+      border: 2px solid #FFD40A;
+    }
   }
 
   .is_highlighted_first ~ div {
-    border: 1px solid green;
+    background: #555;
+    border: 2px solid #555;
+    color: #fff;
+
+    &.is_today {
+      border: 2px solid #FFD40A;
+    }
   }
 
   .is_highlighted_last ~ div {
-    border: 1px solid transparent;
+    background: #fff;
+    border: 2px solid transparent;
+    color: #303030;
+
+    &.is_today {
+      border: 2px solid #FFD40A;
+    }
   }
 }

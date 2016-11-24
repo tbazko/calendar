@@ -33,13 +33,11 @@ class MonthView extends CalendarView {
 		}
 	}
 
-	removeClassesOnElement(classesString, elementId, callback) {
+	removeClassesOnElement(classesString, elementId) {
 		var regex = new RegExp('(?:^|\\s)' + classesString + '(?!\\S)', 'gi');
 		var el = this.document.getElementById(elementId);
 		if (el) {
 			el.className = el.className.replace(regex, '');
-		} else {
-			callback();
 		}
 	}
 }

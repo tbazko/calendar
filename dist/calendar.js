@@ -44,13 +44,13 @@ var CalendarAPI = (function () {
 		};
 	};
 
-	CalendarAPI.today = function today() {
+	CalendarAPI.todayUTC = function todayUTC() {
 		var date = new Date(),
 		    month = date.getMonth();
 		date.setHours(0);
-		var today = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-		today.monthName = this.getMonthName(month).name;
-		return today;
+		var todayUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+		todayUTC.monthName = this.getMonthName(month).name;
+		return todayUTC;
 	};
 
 	CalendarAPI.getDaysInMonth = function getDaysInMonth(month, year) {
@@ -119,7 +119,7 @@ var CalendarModel = (function () {
 	_createClass(CalendarModel, [{
 		key: 'today',
 		get: function get() {
-			return calendarAPI.today();
+			return calendarAPI.todayUTC();
 		}
 	}]);
 
@@ -238,11 +238,7 @@ var MonthModel = (function (_CalendarModel) {
 
 	MonthModel.prototype._generateDates = function _generateDates(start, end, month, year) {
 		var dates = [],
-		   
-		// y = this.today.getFullYear(),
-		// m = this.today.getMonth(),
-		// d = this.today.getDate(),
-		todayStampUTC = this.today.getTime();
+		    todayStampUTC = this.today.getTime();
 
 		for (var i = start; i <= end; i++) {
 			var stampUTC = new Date(Date.UTC(year, month, i)).getTime();
@@ -334,6 +330,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var polyfill = require('./customEventsPolyfill');
 var MonthModel = require('./MonthModel');
 var MonthView = require('./MonthView');
 var CalendarPresenter = require('./CalendarPresenter');
@@ -365,13 +362,16 @@ var MonthPresenter = (function (_CalendarPresenter) {
 	MonthPresenter.prototype.currentMonth = function currentMonth() {
 		this.model.monthToShow = this.model.currentMonth;
 		this.renderView();
+		var event = new CustomEvent("currentMonthRendered", {
+			bubbles: true
+		});
+		this.view.calendar.dispatchEvent(event);
 	};
 
 	// Public functions
 
 	MonthPresenter.prototype.setClassesOnElements = function setClassesOnElements(classesString, idsArray, callback) {
 		for (var i = 0, x = idsArray.length; i < x; i++) {
-			console.log(callback);
 			this.view.setClassOnElement(classesString, idsArray[i], callback);
 		}
 	};
@@ -380,9 +380,9 @@ var MonthPresenter = (function (_CalendarPresenter) {
 		this.view.setClassOnElement(classStr, id, callback);
 	};
 
-	MonthPresenter.prototype.removeClassesOnElements = function removeClassesOnElements(classesString, idsArray, callback) {
+	MonthPresenter.prototype.removeClassesOnElements = function removeClassesOnElements(classesString, idsArray) {
 		for (var i = 0, x = idsArray.length; i < x; i++) {
-			this.view.removeClassesOnElement(classesString, idsArray[i], callback);
+			this.view.removeClassesOnElement(classesString, idsArray[i]);
 		}
 	};
 
@@ -404,6 +404,10 @@ var MonthPresenter = (function (_CalendarPresenter) {
 		    contentFragment = this.getDatesFragment(contentFragment);
 
 		this.view.render(this.model.monthToShow, contentFragment);
+		var event = new CustomEvent("newViewRendered", {
+			bubbles: true
+		});
+		this.view.calendar.dispatchEvent(event);
 	};
 
 	MonthPresenter.prototype.getShortDayNamesFragment = function getShortDayNamesFragment(fragment) {
@@ -450,7 +454,7 @@ var MonthPresenter = (function (_CalendarPresenter) {
 
 module.exports = MonthPresenter;
 
-},{"./CalendarPresenter":4,"./MonthModel":6,"./MonthView":8}],8:[function(require,module,exports){
+},{"./CalendarPresenter":4,"./MonthModel":6,"./MonthView":8,"./customEventsPolyfill":9}],8:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -496,13 +500,11 @@ var MonthView = (function (_CalendarView) {
 		}
 	};
 
-	MonthView.prototype.removeClassesOnElement = function removeClassesOnElement(classesString, elementId, callback) {
+	MonthView.prototype.removeClassesOnElement = function removeClassesOnElement(classesString, elementId) {
 		var regex = new RegExp('(?:^|\\s)' + classesString + '(?!\\S)', 'gi');
 		var el = this.document.getElementById(elementId);
 		if (el) {
 			el.className = el.className.replace(regex, '');
-		} else {
-			callback();
 		}
 	};
 
@@ -512,6 +514,28 @@ var MonthView = (function (_CalendarView) {
 module.exports = MonthView;
 
 },{"./CalendarView":5}],9:[function(require,module,exports){
+"use strict";
+
+module.exports = (function customEventsPolyfillIIFE() {
+	if (typeof window.CustomEvent === "function") return false;
+
+	function CustomEvent(event, params) {
+		params = params || {
+			bubbles: false,
+			cancelable: false,
+			detail: undefined
+		};
+		var evt = document.createEvent('CustomEvent');
+		evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+		return evt;
+	}
+
+	CustomEvent.prototype = window.Event.prototype;
+
+	window.CustomEvent = CustomEvent;
+})();
+
+},{}],10:[function(require,module,exports){
 'use strict';
 
 var CalendarFactory = require('./CalendarFactory');
@@ -526,7 +550,7 @@ var calendarFactory = new CalendarFactory(),
 
 datesHighlighter.connectTo(calendar);
 
-},{"./../datesHighlighter/HighlighterPresenter":15,"./CalendarFactory":2}],10:[function(require,module,exports){
+},{"./../datesHighlighter/HighlighterPresenter":12,"./CalendarFactory":2}],11:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -534,7 +558,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var calendarAPI = require('./../calendar/CalendarAPI');
-var DayState = require('./HighlighterModelDayState');
+var DayState = require('./ModelStates/DayState');
 
 var HighlighterModel = (function () {
 	function HighlighterModel(State) {
@@ -547,10 +571,14 @@ var HighlighterModel = (function () {
 		this.currentState.changeDatesRange(direction);
 	};
 
+	HighlighterModel.prototype.resetDatesToDefault = function resetDatesToDefault() {
+		this.currentState.resetDatesToDefault();
+	};
+
 	_createClass(HighlighterModel, [{
 		key: 'today',
 		get: function get() {
-			return calendarAPI.today();
+			return calendarAPI.todayUTC();
 		}
 	}, {
 		key: 'firstDayStamp',
@@ -591,270 +619,17 @@ var HighlighterModel = (function () {
 
 module.exports = HighlighterModel;
 
-},{"./../calendar/CalendarAPI":1,"./HighlighterModelDayState":11}],11:[function(require,module,exports){
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var calendarAPI = require('./../calendar/CalendarAPI');
-
-var DayState = (function () {
-	function DayState(highlightModel) {
-		_classCallCheck(this, DayState);
-
-		this.model = highlightModel;
-		this._firstDayStamp = this.model.today.getTime();
-		this._lastDayStamp = this.model.today.getTime();
-	}
-
-	DayState.prototype.changeDatesRange = function changeDatesRange(direction) {
-		this.firstDayStamp = this.firstDayStamp + 60 * 60 * 24 * 1000 * direction;
-		this.lastDayStamp = this.firstDayStamp;
-	};
-
-	_createClass(DayState, [{
-		key: 'rangeDescription',
-		get: function get() {
-			var date = new Date(this.firstDayStamp);
-			var dayOfWeek = calendarAPI.getDayName(date.getDay()).name;
-			var monthName = calendarAPI.getMonthName(date.getMonth()).name;
-
-			return dayOfWeek + ', ' + monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
-		}
-	}, {
-		key: 'firstDayStamp',
-		get: function get() {
-			return this._firstDayStamp;
-		},
-		set: function set(timeStamp) {
-			this._firstDayStamp = timeStamp;
-		}
-	}, {
-		key: 'lastDayStamp',
-		get: function get() {
-			return this._lastDayStamp;
-		},
-		set: function set(timeStamp) {
-			this._lastDayStamp = timeStamp;
-		}
-	}]);
-
-	return DayState;
-})();
-
-module.exports = DayState;
-
-},{"./../calendar/CalendarAPI":1}],12:[function(require,module,exports){
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var calendarAPI = require('./../calendar/CalendarAPI');
-
-var DaysState = (function () {
-	function DaysState(highlightModel) {
-		_classCallCheck(this, DaysState);
-
-		this.model = highlightModel;
-		this._firstDayStamp = this.model.today.getTime();
-		this._lastDayStamp = this._firstDayStamp;
-	}
-
-	DaysState.prototype.changeDatesRange = function changeDatesRange(rangeTimestamps, direction) {
-		var first = new Date(daysToHighlightStamps.lastStamp + 60 * 60 * 24 * 1000 * direction);
-
-		// To make sure day starts from 00:00:00 (due to Day Light Saving Time
-		// you get +/- additional hour in specific monthes in some countries)
-		var firstStamp = new Date(first.getFullYear(), first.getMonth(), first.getDate(), 0, 0, 0, 0).getTime();
-		var lastStamp = firstStamp;
-
-		return {
-			firstStamp: firstStamp,
-			lastStamp: lastStamp
-		};
-	};
-
-	_createClass(DaysState, [{
-		key: 'rangeDescription',
-		get: function get() {
-			var date = new Date(this.firstDayStamp);
-			var dayOfWeek = calendarAPI.getDayName(date.getDay()).name;
-			var monthName = calendarAPI.getMonthName(date.getMonth());
-
-			return dayOfWeek + ', ' + monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
-		}
-	}, {
-		key: 'firstDayStamp',
-		get: function get() {
-			return this._firstDayStamp;
-		},
-		set: function set(timeStamp) {
-			this._firstDayStamp = timeStamp;
-		}
-	}, {
-		key: 'lastDayStamp',
-		get: function get() {
-			return this._lastDayStamp;
-		},
-		set: function set(timeStamp) {
-			this._lastDayStamp = timeStamp;
-		}
-	}]);
-
-	return DaysState;
-})();
-
-module.exports = DaysState;
-
-},{"./../calendar/CalendarAPI":1}],13:[function(require,module,exports){
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var calendarAPI = require('./../calendar/CalendarAPI');
-
-var MonthState = (function () {
-	function MonthState(highlightModel) {
-		_classCallCheck(this, MonthState);
-
-		this.model = highlightModel;
-		this._firstDayStamp = this.model.today.getTime();
-		this._lastDayStamp = this._firstDayStamp;
-	}
-
-	MonthState.prototype.changeDatesRange = function changeDatesRange(rangeTimestamps, direction) {
-		var first = new Date(daysToHighlightStamps.lastStamp + 60 * 60 * 24 * 1000 * direction);
-
-		// To make sure day starts from 00:00:00 (due to Day Light Saving Time
-		// you get +/- additional hour in specific monthes in some countries)
-		var firstStamp = new Date(first.getFullYear(), first.getMonth(), first.getDate(), 0, 0, 0, 0).getTime();
-		var lastStamp = firstStamp;
-
-		return {
-			firstStamp: firstStamp,
-			lastStamp: lastStamp
-		};
-	};
-
-	_createClass(MonthState, [{
-		key: 'rangeDescription',
-		get: function get() {
-			var date = new Date(this.firstDayStamp);
-			var dayOfWeek = calendarAPI.getDayName(date.getDay()).name;
-			var monthName = calendarAPI.getMonthName(date.getMonth());
-
-			return dayOfWeek + ', ' + monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
-		}
-	}, {
-		key: 'firstDayStamp',
-		get: function get() {
-			return this._firstDayStamp;
-		},
-		set: function set(timeStamp) {
-			this._firstDayStamp = timeStamp;
-		}
-	}, {
-		key: 'lastDayStamp',
-		get: function get() {
-			return this._lastDayStamp;
-		},
-		set: function set(timeStamp) {
-			this._lastDayStamp = timeStamp;
-		}
-	}]);
-
-	return MonthState;
-})();
-
-module.exports = MonthState;
-
-},{"./../calendar/CalendarAPI":1}],14:[function(require,module,exports){
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var calendarAPI = require('./../calendar/CalendarAPI');
-
-var WeekState = (function () {
-	function WeekState(highlightModel) {
-		_classCallCheck(this, WeekState);
-
-		this.model = highlightModel;
-		this._setFirstAndLastDay(this.model.today.getTime());
-	}
-
-	WeekState.prototype.changeDatesRange = function changeDatesRange(direction) {
-		var step = 60 * 60 * 24 * 7 * 1000;
-		this.firstDay = new Date(this.firstDayStamp + step * direction);
-		this.lastDay = new Date(this.lastDayStamp + step * direction);
-	};
-
-	WeekState.prototype._setFirstAndLastDay = function _setFirstAndLastDay(timeStamp) {
-		var dayOfWeek = new Date(timeStamp).getDay();
-		this.firstDay = new Date(timeStamp - 60 * 60 * 24 * dayOfWeek * 1000);
-		this.lastDay = new Date(this.firstDay.getTime() + 60 * 60 * 24 * 6 * 1000);
-	};
-
-	_createClass(WeekState, [{
-		key: 'rangeDescription',
-		get: function get() {
-			var first = this.firstDay;
-			var last = this.lastDay;
-
-			return calendarAPI.getMonthName(first.getMonth()).shortName + ' ' + first.getDate() + ' - ' + calendarAPI.getMonthName(last.getMonth()).shortName + ' ' + last.getDate() + ', ' + last.getFullYear();
-		}
-	}, {
-		key: 'firstDay',
-		set: function set(day) {
-			this._firstDay = day;
-		},
-		get: function get() {
-			return this._firstDay;
-		}
-	}, {
-		key: 'lastDay',
-		set: function set(day) {
-			this._lastDay = day;
-		},
-		get: function get() {
-			return this._lastDay;
-		}
-	}, {
-		key: 'firstDayStamp',
-		get: function get() {
-			return this.firstDay.getTime();
-		}
-	}, {
-		key: 'lastDayStamp',
-		get: function get() {
-			return this.lastDay.getTime();
-		}
-	}]);
-
-	return WeekState;
-})();
-
-module.exports = WeekState;
-
-},{"./../calendar/CalendarAPI":1}],15:[function(require,module,exports){
+},{"./../calendar/CalendarAPI":1,"./ModelStates/DayState":14}],12:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var HighlighterModel = require('./HighlighterModel');
 var HighlighterView = require('./HighlighterView');
-var DayState = require('./HighlighterModelDayState');
-var WeekState = require('./HighlighterModelWeekState');
-var MonthState = require('./HighlighterModelMonthState');
-var DaysState = require('./HighlighterModelDaysState');
+var DayState = require('./ModelStates/DayState');
+var WeekState = require('./ModelStates/WeekState');
+var MonthState = require('./ModelStates/MonthState');
+var LastDaysState = require('./ModelStates/LastDaysState');
 
 var HighlighterPresenter = (function () {
 	function HighlighterPresenter(document) {
@@ -863,7 +638,6 @@ var HighlighterPresenter = (function () {
 		this.document = document;
 		this.model = new HighlighterModel(DayState);
 		this.view = new HighlighterView(this.document);
-		// this.init();
 	}
 
 	HighlighterPresenter.prototype.connectTo = function connectTo(calendar) {
@@ -874,29 +648,22 @@ var HighlighterPresenter = (function () {
 	HighlighterPresenter.prototype.init = function init() {
 		this.view.declareViewElements();
 		this.bindEvents();
+		this.bindCalendarEvents();
 		this.highlight();
 		this.renderView(this.view.dayViewTrigger);
 	};
 
 	HighlighterPresenter.prototype.removeHighlight = function removeHighlight() {
-		this.calendar.removeClassesOnElements('is_highlighted_first', [this.model.firstDayStamp, this.model.lastDayStamp], function () {
-			// this.calendar.nextMonth();
-			console.log('nothing to remove');
-		});
-		this.calendar.removeClassesOnElements('is_highlighted_last', [this.model.firstDayStamp, this.model.lastDayStamp], function () {
-			// this.calendar.nextMonth();
-			console.log('nothing to remove');
-		});
+		this.calendar.removeClassesOnElements('is_highlighted_first', [this.model.firstDayStamp, this.model.lastDayStamp]);
+		this.calendar.removeClassesOnElements('is_highlighted_last', [this.model.firstDayStamp, this.model.lastDayStamp]);
 	};
 
 	// TODO: Check what's up with recursion
 
 	HighlighterPresenter.prototype.highlight = function highlight(direction) {
-		// if (direction === 0) {
-		// 	this.calendar.currentMonth();
-		// 	this.highlight();
-		// 	console.log(new Date(this.model.firstDayStamp));
-		// }
+		if (direction === 0) {
+			this.calendar.currentMonth();
+		}
 
 		this.calendar.setClassOnElement('is_highlighted_first', this.model.firstDayStamp, (function noElementFound() {
 			if (direction === 1) {
@@ -924,8 +691,20 @@ var HighlighterPresenter = (function () {
 		this.view.nextDatesRangeTrigger.addEventListener('click', this.onDatesRangeClick.bind(this, 1), false);
 
 		for (var i = 0; i < this.view.lastDaysViewTriggers.length; i++) {
-			this.view.lastDaysViewTriggers[i].addEventListener('click', this.onViewTriggerClick.bind(this, DaysState), false);
+			this.view.lastDaysViewTriggers[i].addEventListener('click', this.onViewTriggerClick.bind(this, LastDaysState), false);
 		}
+	};
+
+	// Maybe use mediator?
+
+	HighlighterPresenter.prototype.bindCalendarEvents = function bindCalendarEvents() {
+		this.document.addEventListener('newViewRendered', this.highlight.bind(this), false);
+		this.document.addEventListener('currentMonthRendered', this.onCalendarCurrentMonthView.bind(this), false);
+	};
+
+	HighlighterPresenter.prototype.onCalendarCurrentMonthView = function onCalendarCurrentMonthView(e) {
+		this.model.resetDatesToDefault();
+		this.highlight();
 	};
 
 	HighlighterPresenter.prototype.onDatesRangeClick = function onDatesRangeClick(direction) {
@@ -954,7 +733,7 @@ var HighlighterPresenter = (function () {
 
 module.exports = HighlighterPresenter;
 
-},{"./HighlighterModel":10,"./HighlighterModelDayState":11,"./HighlighterModelDaysState":12,"./HighlighterModelMonthState":13,"./HighlighterModelWeekState":14,"./HighlighterView":16}],16:[function(require,module,exports){
+},{"./HighlighterModel":11,"./HighlighterView":13,"./ModelStates/DayState":14,"./ModelStates/LastDaysState":15,"./ModelStates/MonthState":16,"./ModelStates/WeekState":17}],13:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -1022,4 +801,302 @@ var HighlighterView = (function () {
 
 module.exports = HighlighterView;
 
-},{}]},{},[9]);
+},{}],14:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var calendarAPI = require('./../../calendar/CalendarAPI');
+
+var DayState = (function () {
+	function DayState(highlightModel) {
+		_classCallCheck(this, DayState);
+
+		console.log(new Date(2016, 12, 20));
+		this.model = highlightModel;
+		this._firstDayStamp = this.model.today.getTime();
+		this._lastDayStamp = this.model.today.getTime();
+	}
+
+	DayState.prototype.changeDatesRange = function changeDatesRange(direction) {
+		this.firstDayStamp = this.firstDayStamp + 60 * 60 * 24 * 1000 * direction;
+		this.lastDayStamp = this.firstDayStamp;
+	};
+
+	DayState.prototype.resetDatesToDefault = function resetDatesToDefault() {
+		this.firstDayStamp = this.model.today.getTime();
+		this.lastDayStamp = this.model.today.getTime();
+	};
+
+	_createClass(DayState, [{
+		key: 'rangeDescription',
+		get: function get() {
+			var date = new Date(this.firstDayStamp);
+			var dayOfWeek = calendarAPI.getDayName(date.getDay()).name;
+			var monthName = calendarAPI.getMonthName(date.getMonth()).name;
+
+			return dayOfWeek + ', ' + monthName + ' ' + date.getDate() + ', ' + date.getFullYear();
+		}
+	}, {
+		key: 'firstDayStamp',
+		get: function get() {
+			return this._firstDayStamp;
+		},
+		set: function set(timeStamp) {
+			this._firstDayStamp = timeStamp;
+		}
+	}, {
+		key: 'lastDayStamp',
+		get: function get() {
+			return this._lastDayStamp;
+		},
+		set: function set(timeStamp) {
+			this._lastDayStamp = timeStamp;
+		}
+	}]);
+
+	return DayState;
+})();
+
+module.exports = DayState;
+
+},{"./../../calendar/CalendarAPI":1}],15:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var calendarAPI = require('./../../calendar/CalendarAPI');
+
+var LastDaysState = (function () {
+	function LastDaysState(highlightModel, daysCount) {
+		_classCallCheck(this, LastDaysState);
+
+		this.model = highlightModel;
+		this.daysCount = daysCount;
+		this._setFirstAndLastDay(this.model.today);
+	}
+
+	LastDaysState.prototype.changeDatesRange = function changeDatesRange(direction) {
+		var first = this.firstDay;
+		var last = this.lastDay;
+		// console.log(new Date(first.getFullYear(), first.getMonth(), first.getDate() + this.daysCount * direction));
+		// console.log(new Date(last.getFullYear(), last.getMonth(), last.getDate() + this.daysCount * direction));
+		this.firstDay = new Date(Date.UTC(first.getFullYear(), first.getMonth(), first.getDate() + this.daysCount * direction));
+		this.lastDay = new Date(Date.UTC(last.getFullYear(), last.getMonth(), last.getDate() + this.daysCount * direction));
+	};
+
+	LastDaysState.prototype.resetDatesToDefault = function resetDatesToDefault() {
+		this._setFirstAndLastDay(this.model.today);
+	};
+
+	LastDaysState.prototype._setFirstAndLastDay = function _setFirstAndLastDay(date) {
+		var y = date.getFullYear(),
+		    m = date.getMonth();
+
+		this.firstDay = new Date(Date.UTC(y, m, date.getDate() - this.daysCount));
+		this.lastDay = new Date(Date.UTC(y, m, date.getDate() - 1));
+	};
+
+	_createClass(LastDaysState, [{
+		key: 'rangeDescription',
+		get: function get() {
+			var first = this.firstDay;
+			var last = this.lastDay;
+
+			return calendarAPI.getMonthName(first.getMonth()).shortName + ' ' + first.getDate() + ' - ' + calendarAPI.getMonthName(last.getMonth()).shortName + ' ' + last.getDate() + ', ' + last.getFullYear();
+		}
+	}, {
+		key: 'firstDay',
+		set: function set(day) {
+			this._firstDay = day;
+		},
+		get: function get() {
+			return this._firstDay;
+		}
+	}, {
+		key: 'lastDay',
+		set: function set(day) {
+			this._lastDay = day;
+		},
+		get: function get() {
+			return this._lastDay;
+		}
+	}, {
+		key: 'firstDayStamp',
+		get: function get() {
+			return this.firstDay.getTime();
+		}
+	}, {
+		key: 'lastDayStamp',
+		get: function get() {
+			return this.lastDay.getTime();
+		}
+	}]);
+
+	return LastDaysState;
+})();
+
+module.exports = LastDaysState;
+
+},{"./../../calendar/CalendarAPI":1}],16:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var calendarAPI = require('./../../calendar/CalendarAPI');
+
+var MonthState = (function () {
+	function MonthState(highlightModel) {
+		_classCallCheck(this, MonthState);
+
+		this.model = highlightModel;
+		this._setFirstAndLastDay(this.model.today);
+	}
+
+	MonthState.prototype.changeDatesRange = function changeDatesRange(direction) {
+		var date,
+		    y = this.firstDay.getFullYear(),
+		    m = this.firstDay.getMonth();
+
+		if (direction) {
+			date = new Date(y, m + direction, 1);
+		} else {
+			date = this.model.today;
+		}
+		this._setFirstAndLastDay(date);
+	};
+
+	MonthState.prototype.resetDatesToDefault = function resetDatesToDefault() {
+		this._setFirstAndLastDay(this.model.today);
+	};
+
+	MonthState.prototype._setFirstAndLastDay = function _setFirstAndLastDay(date) {
+		var y = date.getFullYear(),
+		    m = date.getMonth();
+
+		this.firstDay = new Date(Date.UTC(y, m, 1));
+		this.lastDay = new Date(Date.UTC(y, m, calendarAPI.getDaysInMonth(m, y)));
+	};
+
+	_createClass(MonthState, [{
+		key: 'rangeDescription',
+		get: function get() {
+			var date = this.firstDay;
+			var monthName = calendarAPI.getMonthName(date.getMonth()).name;
+
+			return monthName + ', ' + date.getFullYear();
+		}
+	}, {
+		key: 'firstDay',
+		set: function set(day) {
+			this._firstDay = day;
+		},
+		get: function get() {
+			return this._firstDay;
+		}
+	}, {
+		key: 'lastDay',
+		set: function set(day) {
+			this._lastDay = day;
+		},
+		get: function get() {
+			return this._lastDay;
+		}
+	}, {
+		key: 'firstDayStamp',
+		get: function get() {
+			return this.firstDay.getTime();
+		}
+	}, {
+		key: 'lastDayStamp',
+		get: function get() {
+			return this.lastDay.getTime();
+		}
+	}]);
+
+	return MonthState;
+})();
+
+module.exports = MonthState;
+
+},{"./../../calendar/CalendarAPI":1}],17:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var calendarAPI = require('./../../calendar/CalendarAPI');
+
+var WeekState = (function () {
+	function WeekState(highlightModel) {
+		_classCallCheck(this, WeekState);
+
+		this.model = highlightModel;
+		this._setFirstAndLastDay(this.model.today.getTime());
+	}
+
+	WeekState.prototype.changeDatesRange = function changeDatesRange(direction) {
+		var step = 60 * 60 * 24 * 7 * 1000;
+		this.firstDay = new Date(this.firstDayStamp + step * direction);
+		this.lastDay = new Date(this.lastDayStamp + step * direction);
+	};
+
+	WeekState.prototype.resetDatesToDefault = function resetDatesToDefault() {
+		this._setFirstAndLastDay(this.model.today.getTime());
+	};
+
+	WeekState.prototype._setFirstAndLastDay = function _setFirstAndLastDay(timeStamp) {
+		var dayOfWeek = new Date(timeStamp).getDay();
+		this.firstDay = new Date(timeStamp - 60 * 60 * 24 * dayOfWeek * 1000);
+		this.lastDay = new Date(this.firstDay.getTime() + 60 * 60 * 24 * 6 * 1000);
+	};
+
+	_createClass(WeekState, [{
+		key: 'rangeDescription',
+		get: function get() {
+			var first = this.firstDay;
+			var last = this.lastDay;
+
+			return calendarAPI.getMonthName(first.getMonth()).shortName + ' ' + first.getDate() + ' - ' + calendarAPI.getMonthName(last.getMonth()).shortName + ' ' + last.getDate() + ', ' + last.getFullYear();
+		}
+	}, {
+		key: 'firstDay',
+		set: function set(day) {
+			this._firstDay = day;
+		},
+		get: function get() {
+			return this._firstDay;
+		}
+	}, {
+		key: 'lastDay',
+		set: function set(day) {
+			this._lastDay = day;
+		},
+		get: function get() {
+			return this._lastDay;
+		}
+	}, {
+		key: 'firstDayStamp',
+		get: function get() {
+			return this.firstDay.getTime();
+		}
+	}, {
+		key: 'lastDayStamp',
+		get: function get() {
+			return this.lastDay.getTime();
+		}
+	}]);
+
+	return WeekState;
+})();
+
+module.exports = WeekState;
+
+},{"./../../calendar/CalendarAPI":1}]},{},[10]);

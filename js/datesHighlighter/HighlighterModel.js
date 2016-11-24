@@ -1,5 +1,5 @@
 const calendarAPI = require('./../calendar/CalendarAPI');
-const DayState = require('./HighlighterModelDayState');
+const DayState = require('./ModelStates/DayState');
 
 class HighlighterModel {
 	constructor(State) {
@@ -7,7 +7,7 @@ class HighlighterModel {
 	}
 
 	get today() {
-		return calendarAPI.today();
+		return calendarAPI.todayUTC();
 	}
 
 	get firstDayStamp() {
@@ -43,6 +43,10 @@ class HighlighterModel {
 
 	changeDatesRange(direction) {
 		this.currentState.changeDatesRange(direction);
+	}
+
+	resetDatesToDefault() {
+		this.currentState.resetDatesToDefault();
 	}
 }
 

@@ -58,7 +58,7 @@ module.exports = function (grunt) {
 				}
 			},
 			scripts: {
-				files: ['./js/*.js', './js/**/*.js', './js/calendar/*.js', './js/datesHighlighter/*.js'],
+				files: ['./js/*.js', './js/**/*.js', './js/calendar/*.js', './js/datesHighlighter/*.js', './js/datesHighlighter/ModelStates/*.js'],
 				tasks: ['browserify']
 			}
 			// js: {

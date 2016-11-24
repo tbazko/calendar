@@ -4,7 +4,7 @@ class CalendarModel {
 	constructor() {}
 
 	get today() {
-		return calendarAPI.today();
+		return calendarAPI.todayUTC();
 	}
 
 	totalDaysInMonth(month, year) {

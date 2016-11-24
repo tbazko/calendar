@@ -1,7 +1,8 @@
-const calendarAPI = require('./../calendar/CalendarAPI');
+const calendarAPI = require('./../../calendar/CalendarAPI');
 
 class DayState {
 	constructor(highlightModel) {
+		console.log(new Date(2016, 12, 20));
 		this.model = highlightModel;
 		this._firstDayStamp = this.model.today.getTime();
 		this._lastDayStamp = this.model.today.getTime();
@@ -38,6 +39,10 @@ class DayState {
 		this.lastDayStamp = this.firstDayStamp;
 	}
 
+	resetDatesToDefault() {
+		this.firstDayStamp = this.model.today.getTime();
+		this.lastDayStamp = this.model.today.getTime();
+	}
 }
 
 module.exports = DayState;

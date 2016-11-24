@@ -39,13 +39,13 @@ class CalendarAPI {
 		}
 	}
 
-	static today() {
+	static todayUTC() {
 		var date = new Date(),
 			month = date.getMonth();
 		date.setHours(0);
-		var today = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-		today.monthName = this.getMonthName(month).name;
-		return today;
+		var todayUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+		todayUTC.monthName = this.getMonthName(month).name;
+		return todayUTC;
 	}
 
 	static getDaysInMonth(month, year) {

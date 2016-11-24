@@ -1,4 +1,4 @@
-const calendarAPI = require('./../calendar/CalendarAPI');
+const calendarAPI = require('./../../calendar/CalendarAPI');
 
 class WeekState {
 	constructor(highlightModel) {
@@ -47,11 +47,14 @@ class WeekState {
 		this.lastDay = new Date(this.lastDayStamp + step * direction);
 	}
 
+	resetDatesToDefault() {
+		this._setFirstAndLastDay(this.model.today.getTime());
+	}
+
 	_setFirstAndLastDay(timeStamp) {
 		var dayOfWeek = new Date(timeStamp).getDay();
 		this.firstDay = new Date(timeStamp - 60 * 60 * 24 * dayOfWeek * 1000);
 		this.lastDay = new Date(this.firstDay.getTime() + 60 * 60 * 24 * 6 * 1000);
 	}
-
 }
 module.exports = WeekState;
