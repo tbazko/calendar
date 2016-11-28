@@ -21,33 +21,55 @@ class HighlighterPresenter {
 		this.view.declareViewElements();
 		this.bindEvents();
 		this.bindCalendarEvents();
-		this.highlight();
+		this.highlightCalendar();
 		this.renderView(this.view.dayViewTrigger);
 	}
 
 	removeHighlight() {
-		this.calendar.removeClassesOnElements('is_highlighted_first', [this.model.firstDayStamp, this.model.lastDayStamp]);
+		this.calendar.removeClassesOnElements('is_highlighted_first', [this.model.firstDayStamp, this.model.lastDayStamp, this.calendar.model.allDatesOfWeeks[0].timestampUTC]);
 		this.calendar.removeClassesOnElements('is_highlighted_last', [this.model.firstDayStamp, this.model.lastDayStamp]);
 	}
 
-	// TODO: Check what's up with recursion
-	highlight(direction) {
-		if (direction === 0) {
-			this.calendar.currentMonth();
+	highlightCalendar(month) {
+		if (month && month.isCurrentMonth) {
+			this.model.resetDatesToDefault();
 		}
 
-		this.calendar.setClassOnElement('is_highlighted_first', this.model.firstDayStamp, function noElementFound() {
-			if (direction === 1) {
-				this.calendar.nextMonth();
-				this.highlight(1);
+		var first = this.model.firstDayStamp,
+			last = this.model.lastDayStamp,
+			allDatesInView = this.calendar.model.allDatesOfWeeks,
+			firstInViewStamp = allDatesInView[0].timestampUTC,
+			lastInViewStamp = allDatesInView[allDatesInView.length - 1].timestampUTC,
+			isLastInCurrentView = this.isDateInCurrentView(last, firstInViewStamp, lastInViewStamp);
+
+		this.calendar.setClassOnElement('is_highlighted_first', first, function noElementFound() {
+			if (this.model.direction === 1) {
+				this.moveToMonthOfStamp(first);
+			} else if (isLastInCurrentView) {
+				this.calendar.setClassOnElement('is_highlighted_first', firstInViewStamp, function () {
+					return false;
+				});
 			}
 		}.bind(this));
-		this.calendar.setClassOnElement('is_highlighted_last', this.model.lastDayStamp, function noElementFound() {
-			if (direction === -1) {
-				this.calendar.prevMonth();
-				this.highlight(-1);
+		this.calendar.setClassOnElement('is_highlighted_last', last, function noElementFound() {
+			if (this.model.direction === -1) {
+				this.moveToMonthOfStamp(last);
 			}
 		}.bind(this));
+		this.model.direction = 0;
+	}
+
+	isDateInCurrentView(dateStamp, firstDateInViewStamp, lastDateInViewStamp) {
+		return dateStamp > firstDateInViewStamp && dateStamp < lastDateInViewStamp;
+	}
+
+	moveToMonthOfStamp(date) {
+		this.model.direction = 0;
+		var date = new Date(date);
+		this.calendar.model.monthToShow = {
+			month: date.getMonth(),
+			year: date.getFullYear()
+		}
 	}
 
 	renderView(target) {
@@ -66,22 +88,15 @@ class HighlighterPresenter {
 		}
 	}
 
-	// Maybe use mediator?
 	bindCalendarEvents() {
-		this.document.addEventListener('newViewRendered', this.highlight.bind(this), false);
-		this.document.addEventListener('currentMonthRendered', this.onCalendarCurrentMonthView.bind(this), false);
-	}
-
-	onCalendarCurrentMonthView(e) {
-		this.model.resetDatesToDefault();
-		this.highlight();
+		this.calendar.model.addObserver(this.highlightCalendar.bind(this));
 	}
 
 	onDatesRangeClick(direction) {
 		this.removeHighlight();
-		this.model.changeDatesRange(direction);
+		this.model.direction = direction;
 		this.view.setRangeDescription(this.model.rangeDescription);
-		this.highlight(direction);
+		this.highlightCalendar();
 	}
 
 	onViewTriggerClick(newState, e) {
@@ -92,10 +107,11 @@ class HighlighterPresenter {
 		if (this.model.currentState == state) {
 			return;
 		}
+
 		this.removeHighlight();
 		this.model.currentState = state;
 		this.renderView(target);
-		this.highlight(0);
+		this.moveToMonthOfStamp(this.model.today.getTime());
 	}
 }
 

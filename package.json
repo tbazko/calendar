@@ -14,9 +14,11 @@
     "grunt-contrib-watch": "^0.6.1"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.18.0",
+    "babelify": "^7.3.0",
     "grunt": "^0.4.5",
-    "grunt-sass": "^1.1.0",
-    "babelify": "^6.1.0",
-    "grunt-browserify": "^3.8.0"
+    "grunt-browserify": "^3.8.0",
+    "grunt-contrib-jasmine": "^1.0.3",
+    "grunt-sass": "^1.1.0"
   }
 }

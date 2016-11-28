@@ -1,4 +1,3 @@
-const polyfill = require('./customEventsPolyfill');
 const MonthModel = require('./MonthModel');
 const MonthView = require('./MonthView');
 const CalendarPresenter = require('./CalendarPresenter');
@@ -14,22 +13,18 @@ class MonthPresenter extends CalendarPresenter {
 	init() {
 		this.view.declareViewElements();
 		this.bindEvents();
-		this.renderView();
+		this._renderView();
 	}
 
 	bindEvents() {
 		this.view.nextMonth.addEventListener('click', this.nextMonth.bind(this), false);
 		this.view.prevMonth.addEventListener('click', this.prevMonth.bind(this), false);
 		this.view.todayTrigger.addEventListener('click', this.currentMonth.bind(this), false);
+		this.model.addObserver(this._renderView.bind(this));
 	}
 
 	currentMonth() {
 		this.model.monthToShow = this.model.currentMonth;
-		this.renderView();
-		var event = new CustomEvent("currentMonthRendered", {
-			bubbles: true
-		});
-		this.view.calendar.dispatchEvent(event);
 	}
 
 	// Public functions
@@ -51,16 +46,15 @@ class MonthPresenter extends CalendarPresenter {
 
 	nextMonth() {
 		this.model.monthToShow = this.model.nextMonth;
-		this.renderView();
 	}
 
 	prevMonth() {
-			this.model.monthToShow = this.model.prevMonth;
-			this.renderView();
-		}
-		// Public functions end
+		this.model.monthToShow = this.model.prevMonth;
+	}
 
-	renderView() {
+	// Public functions end
+
+	_renderView() {
 		var contentFragment = this.document.createDocumentFragment(),
 			contentFragment = this.getShortDayNamesFragment(contentFragment),
 			contentFragment = this.getDatesFragment(contentFragment);

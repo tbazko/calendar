@@ -42,11 +42,10 @@ class LastDaysState {
 		return this._lastDay;
 	}
 
-	changeDatesRange(direction) {
-		var first = this.firstDay;
-		var last = this.lastDay;
-		// console.log(new Date(first.getFullYear(), first.getMonth(), first.getDate() + this.daysCount * direction));
-		// console.log(new Date(last.getFullYear(), last.getMonth(), last.getDate() + this.daysCount * direction));
+	_changeDatesRange() {
+		var first = this.firstDay,
+			last = this.lastDay,
+			direction = this.model.direction;
 		this.firstDay = new Date(Date.UTC(first.getFullYear(), first.getMonth(), first.getDate() + this.daysCount * direction));
 		this.lastDay = new Date(Date.UTC(last.getFullYear(), last.getMonth(), last.getDate() + this.daysCount * direction));
 

@@ -9,73 +9,63 @@ class MonthModel extends CalendarModel {
 			year: this.today.getFullYear(),
 			monthName: this.today.monthName
 		}
-		this._monthToShow = {
+		this.monthToShow = {
 			month: this._currentMonth.month,
-			year: this._currentMonth.year,
-			monthName: this._currentMonth.monthName
+			year: this._currentMonth.year
 		}
+	}
+
+	set monthToShow(monthToShow) {
+		var isCurrentYear = monthToShow.year === this._currentMonth.year,
+			isCrurentMonth = monthToShow.month === this._currentMonth.month;
+
+		this._monthToShow = {
+			month: monthToShow.month,
+			year: monthToShow.year,
+			monthName: calendarAPI.getMonthName(monthToShow.month).name
+		};
+
+		this.notifyObservers({
+			isCurrentMonth: isCurrentYear && isCrurentMonth
+		});
+
 	}
 
 	get monthToShow() {
 		return this._monthToShow;
 	}
 
-	set monthToShow(monthToShow) {
-		this._monthToShow = {
-			month: monthToShow.month,
-			year: monthToShow.year,
-			monthName: monthToShow.monthName
-		};
-	}
-
 	get currentMonth() {
 		return this._currentMonth;
 	}
 
-	get nextMonth() {
-		var toShow = this.monthToShow,
-			date;
-
-		if (toShow.month === 11) {
-			date = new Date(toShow.year + 1, 0, 1);
-		} else {
-			date = new Date(toShow.year, toShow.month + 1, 1);
-		}
-
-		return toShow = {
-			month: date.getMonth(),
-			year: date.getFullYear(),
-			monthName: calendarAPI.getMonthName(date.getMonth()).name
-		}
-	}
-
 	get prevMonth() {
-		var toShow = this.monthToShow,
-			date;
+		return this.changeMonth(-1);
+	}
 
-		if (toShow.month === 0) {
-			date = new Date(toShow.year - 1, 11, 1);
-		} else {
-			date = new Date(toShow.year, toShow.month - 1, 1);
-		}
+	get nextMonth() {
+		return this.changeMonth(1);
+	}
 
-		return toShow = {
+	changeMonth(direction) {
+		var monthToShow = this.monthToShow,
+			date = new Date(monthToShow.year, monthToShow.month + direction, 1);
+
+		return monthToShow = {
 			month: date.getMonth(),
 			year: date.getFullYear(),
 			monthName: calendarAPI.getMonthName(date.getMonth()).name
 		}
 	}
 
-	// @param  {Integer}   Month 0 - 11
-	// @param  {Integer}   Year
 	// @return {Array}     Array of objects {date, timestamp, isToday}
 	// Weeks includes dates of prev/current/next monthes
 	get allDatesOfWeeks() {
 		var month = this.monthToShow;
-		return [].concat(this._getPrevMonthDatesLeftover(), this._getAllDatesOfMonth(), this._getDatesLastWeekLeftover());
+		return [].concat(this.prevMonthDatesLeftover, this.allDatesOfMonth, this.datesLastWeekLeftover);
 	}
 
-	_getPrevMonthDatesLeftover() {
+	get prevMonthDatesLeftover() {
 		var monthToShow = this.monthToShow,
 			firstDayOfMonth = new Date(monthToShow.year, monthToShow.month, 1).getDay(),
 			dates = [];
@@ -89,14 +79,14 @@ class MonthModel extends CalendarModel {
 		return dates;
 	}
 
-	_getAllDatesOfMonth() {
+	get allDatesOfMonth() {
 		var monthToShow = this.monthToShow,
 			end = this.totalDaysInMonth(monthToShow.month, monthToShow.year);
 
 		return this._generateDates(1, end, monthToShow.month, monthToShow.year);
 	}
 
-	_getDatesLastWeekLeftover() {
+	get datesLastWeekLeftover() {
 		var monthToShow = this.monthToShow,
 			totalDaysInMonth = this.totalDaysInMonth(monthToShow.month, monthToShow.year),
 			lastDayOfMonth = new Date(monthToShow.year, monthToShow.month, totalDaysInMonth).getDay(),

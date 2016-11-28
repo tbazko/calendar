@@ -2,7 +2,6 @@ const calendarAPI = require('./../../calendar/CalendarAPI');
 
 class DayState {
 	constructor(highlightModel) {
-		console.log(new Date(2016, 12, 20));
 		this.model = highlightModel;
 		this._firstDayStamp = this.model.today.getTime();
 		this._lastDayStamp = this.model.today.getTime();
@@ -34,8 +33,8 @@ class DayState {
 		this._lastDayStamp = timeStamp;
 	}
 
-	changeDatesRange(direction) {
-		this.firstDayStamp = this.firstDayStamp + 60 * 60 * 24 * 1000 * direction;
+	_changeDatesRange() {
+		this.firstDayStamp = this.firstDayStamp + 60 * 60 * 24 * 1000 * this.model.direction;
 		this.lastDayStamp = this.firstDayStamp;
 	}
 

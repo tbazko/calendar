@@ -1,5 +1,5 @@
-const CalendarFactory = require('./CalendarFactory');
-const HighlighterPresenter = require('./../datesHighlighter/HighlighterPresenter');
+const CalendarFactory = require('./calendar/CalendarFactory');
+const HighlighterPresenter = require('./datesHighlighter/HighlighterPresenter');
 
 let datesHighlighter = new HighlighterPresenter(document);
 

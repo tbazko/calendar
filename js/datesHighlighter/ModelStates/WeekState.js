@@ -41,8 +41,9 @@ class WeekState {
 		return this._lastDay;
 	}
 
-	changeDatesRange(direction) {
-		var step = 60 * 60 * 24 * 7 * 1000;
+	_changeDatesRange() {
+		var step = 60 * 60 * 24 * 7 * 1000,
+			direction = this.model.direction;
 		this.firstDay = new Date(this.firstDayStamp + step * direction);
 		this.lastDay = new Date(this.lastDayStamp + step * direction);
 	}

@@ -3,7 +3,16 @@ const DayState = require('./ModelStates/DayState');
 
 class HighlighterModel {
 	constructor(State) {
-		this.currentState = new DayState(this);
+		this._currentState = new DayState(this);
+		this._direction = 0;
+	}
+
+	set currentState(newState) {
+		this._currentState = newState;
+	}
+
+	get currentState() {
+		return this._currentState;
 	}
 
 	get today() {
@@ -18,14 +27,6 @@ class HighlighterModel {
 		return this.currentState.lastDayStamp;
 	}
 
-	get currentState() {
-		return this._currentState;
-	}
-
-	set currentState(newState) {
-		this._currentState = newState;
-	}
-
 	get highlightRangeStamps() {
 		return {
 			firstDayStamp: this.currentState.firstDayStamp,
@@ -33,16 +34,17 @@ class HighlighterModel {
 		}
 	}
 
-	set highlightRangeStamps(range) {
-
-	}
-
 	get rangeDescription() {
 		return this.currentState.rangeDescription;
 	}
 
-	changeDatesRange(direction) {
-		this.currentState.changeDatesRange(direction);
+	get direction() {
+		return this._direction;
+	}
+
+	set direction(direction) {
+		this._direction = direction;
+		this.currentState._changeDatesRange();
 	}
 
 	resetDatesToDefault() {

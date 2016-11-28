@@ -37,10 +37,11 @@ class MonthState {
 		return this._lastDay;
 	}
 
-	changeDatesRange(direction) {
+	_changeDatesRange() {
 		var date,
 			y = this.firstDay.getFullYear(),
-			m = this.firstDay.getMonth();
+			m = this.firstDay.getMonth(),
+			direction = this.model.direction;
 
 		if (direction) {
 			date = new Date(y, m + direction, 1);

@@ -1,23 +1,6 @@
 module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		browserify: {
-			dist: {
-				options: {
-					transform: [
-						['babelify', {
-							loose: 'all'
-						}]
-					]
-				},
-				files: {
-					// if the source file has an extension of es6 then
-					// we change the name of the source file accordingly.
-					// The result file's extension is always .js
-					'./dist/calendar.js': ['./js/calendar/index.js', './js/datesHighlighter/index.js']
-				}
-			}
-		},
 		sass: {
 			options: {
 				sourcemap: 'none',
@@ -57,7 +40,7 @@ module.exports = function (grunt) {
 					livereload: true, // needed to run LiveReload
 				}
 			},
-			scripts: {
+			browserify: {
 				files: ['./js/*.js', './js/**/*.js', './js/calendar/*.js', './js/datesHighlighter/*.js', './js/datesHighlighter/ModelStates/*.js'],
 				tasks: ['browserify']
 			}
@@ -65,6 +48,19 @@ module.exports = function (grunt) {
 			// 	files: ['js/*.js'],
 			// 	tasks: ['uglify']
 			// }
+		},
+		browserify: {
+			dist: {
+				options: {
+					transform: [
+						['babelify', {
+							presets: ['es2015']
+						}]
+					]
+				},
+				src: ['./js/index.js'],
+				dest: 'dist/calendar.js'
+			}
 		}
 	});
 

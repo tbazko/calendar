@@ -1,7 +1,9 @@
 const calendarAPI = require('./CalendarAPI');
 
 class CalendarModel {
-	constructor() {}
+	constructor() {
+		this._observerList = [];
+	}
 
 	get today() {
 		return calendarAPI.todayUTC();
@@ -15,6 +17,15 @@ class CalendarModel {
 		return calendarAPI.shortDayNames();
 	}
 
+	addObserver(callback) {
+		this._observerList.push(callback);
+	}
+
+	notifyObservers(data) {
+		this._observerList.forEach(callback => {
+			callback(data);
+		});
+	}
 }
 
 module.exports = CalendarModel;
