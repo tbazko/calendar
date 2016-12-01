@@ -1,8 +1,9 @@
-const Month = require('./MonthPresenter');
+'use strict';
+const MonthPresenter = require('./MonthPresenter');
 
 class CalendarFactory {
 	constructor() {
-		this.calendarClass = Month;
+		this.calendarClass = MonthPresenter;
 	}
 
 	createCalendar(options) {
@@ -11,11 +12,11 @@ class CalendarFactory {
 			this.calendarClass = 'Year';
 			break;
 		case "month":
-			this.calendarClass = Month;
+			this.calendarClass = MonthPresenter;
 			break;
 		}
 
-		return new this.calendarClass(options);
+		return new this.calendarClass(window.document);
 	}
 }
 

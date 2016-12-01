@@ -1,3 +1,4 @@
+'use strict';
 var CalendarView = require('./CalendarView');
 
 class MonthView extends CalendarView {
@@ -13,7 +14,7 @@ class MonthView extends CalendarView {
 		if (this.calendarContent) {
 			this.calendar.removeChild(this.calendarContent);
 		}
-		this.calendarContent = document.createElement('div');
+		this.calendarContent = this.document.createElement('div');
 		this.calendarContent.setAttribute('class', 'calendar_content');
 		this.calendar.appendChild(this.calendarContent);
 

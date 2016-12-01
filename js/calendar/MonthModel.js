@@ -1,3 +1,4 @@
+'use strict';
 const CalendarModel = require('./CalendarModel');
 const calendarAPI = require('./CalendarAPI');
 

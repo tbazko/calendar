@@ -24,11 +24,10 @@ module.exports = function (grunt) {
 		},
 		// uglify: {
 		// 	my_target: {
-		// 		options: {
-		// 			compress: false
-		// 		},
 		// 		files: {
-		// 			'test.js': ['js/initialize.js', 'js/Calendar.js', 'js/DayViewState.js', 'js/WeekViewState.js', 'js/MonthViewState.js', 'js/LastDaysViewState.js']
+		// 			'calendar.js': ['js/calendar/*.js'],
+		//			'highlighter.js': ['js/datesHighlighter/*.js'],
+		//			'bundle.js': ['js/index.js', 'js/calendar/*.js', 'js/datesHighlighter/*.js']
 		// 		}
 		// 	}
 		// },
@@ -41,7 +40,7 @@ module.exports = function (grunt) {
 				}
 			},
 			browserify: {
-				files: ['./js/*.js', './js/**/*.js', './js/calendar/*.js', './js/datesHighlighter/*.js', './js/datesHighlighter/ModelStates/*.js'],
+				files: ['./js/*.js', './js/**/*.js'],
 				tasks: ['browserify']
 			}
 			// js: {
@@ -58,10 +57,14 @@ module.exports = function (grunt) {
 						}]
 					]
 				},
-				src: ['./js/index.js'],
-				dest: 'dist/calendar.js'
+				files: {
+					'dist/calendar.js': ['js/calendar/*.js'],
+					'dist/highlighter.js': ['js/datesHighlighter/*.js'],
+					'dist/bundle.js': ['js/index.js', 'js/calendar/*.js', 'js/datesHighlighter/*.js']
+				}
 			}
 		}
+
 	});
 
 	grunt.loadNpmTasks('grunt-browserify');

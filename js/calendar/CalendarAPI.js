@@ -1,4 +1,5 @@
 // Calendar API
+'use strict';
 
 class CalendarAPI {
 	static dayNames() {

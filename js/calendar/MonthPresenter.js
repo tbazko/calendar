@@ -1,12 +1,13 @@
+'use strict';
 const MonthModel = require('./MonthModel');
 const MonthView = require('./MonthView');
 const CalendarPresenter = require('./CalendarPresenter');
 
 class MonthPresenter extends CalendarPresenter {
-	constructor() {
+	constructor(document) {
 		super(document);
 		this.model = this.createMonthModel();
-		this.view = this.createMonthView();
+		this.view = this.createMonthView(this.document);
 		this.init();
 	}
 
@@ -60,10 +61,6 @@ class MonthPresenter extends CalendarPresenter {
 			contentFragment = this.getDatesFragment(contentFragment);
 
 		this.view.render(this.model.monthToShow, contentFragment);
-		var event = new CustomEvent("newViewRendered", {
-			bubbles: true
-		});
-		this.view.calendar.dispatchEvent(event);
 	}
 
 	getShortDayNamesFragment(fragment) {
@@ -71,7 +68,7 @@ class MonthPresenter extends CalendarPresenter {
 			child;
 
 		for (var i = 0, x = dayNames.length; i < x; i++) {
-			child = document.createElement('div');
+			child = this.document.createElement('div');
 			child.textContent = dayNames[i];
 			fragment.appendChild(child);
 		}
@@ -84,7 +81,7 @@ class MonthPresenter extends CalendarPresenter {
 			child;
 
 		for (var i = 0, x = dates.length; i < x; i++) {
-			child = document.createElement('div');
+			child = this.document.createElement('div');
 			child.id = dates[i].timestampUTC;
 			child.textContent = dates[i].date;
 
