@@ -60,11 +60,12 @@ describe('Calendar API', function () {
 		});
 	});
 
-	it('should return today in UTC time with set monthName', function () {
+	it('shoud return today Date object (in UTC) and have monthName property', function () {
 		var date = new Date();
 		date.setHours(0);
 		date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 		expect(calendarAPI.todayUTC()).toEqual(date);
+		expect(calendarAPI.todayUTC().monthName).toEqual(jasmine.any(String));
 	});
 
 	it('should return quantity of days in month, "out of bounds" numbers allowed', function () {

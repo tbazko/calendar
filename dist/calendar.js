@@ -139,7 +139,9 @@ var CalendarModel = function () {
 	}, {
 		key: 'addObserver',
 		value: function addObserver(callback) {
-			this._observerList.push(callback);
+			if (typeof callback === 'function') {
+				this._observerList.push(callback);
+			}
 		}
 	}, {
 		key: 'notifyObservers',
@@ -277,7 +279,7 @@ var MonthModel = function (_CalendarModel) {
 		key: 'monthToShow',
 		set: function set(monthToShow) {
 			var isCurrentYear = monthToShow.year === this._currentMonth.year,
-			    isCrurentMonth = monthToShow.month === this._currentMonth.month;
+			    isCurrentMonth = monthToShow.month === this._currentMonth.month;
 
 			this._monthToShow = {
 				month: monthToShow.month,
@@ -286,7 +288,7 @@ var MonthModel = function (_CalendarModel) {
 			};
 
 			this.notifyObservers({
-				isCurrentMonth: isCurrentYear && isCrurentMonth
+				isCurrentMonth: isCurrentYear && isCurrentMonth
 			});
 		},
 		get: function get() {

@@ -19,7 +19,9 @@ class CalendarModel {
 	}
 
 	addObserver(callback) {
-		this._observerList.push(callback);
+		if (typeof callback === 'function') {
+			this._observerList.push(callback);
+		}
 	}
 
 	notifyObservers(data) {

@@ -18,7 +18,7 @@ class MonthModel extends CalendarModel {
 
 	set monthToShow(monthToShow) {
 		var isCurrentYear = monthToShow.year === this._currentMonth.year,
-			isCrurentMonth = monthToShow.month === this._currentMonth.month;
+			isCurrentMonth = monthToShow.month === this._currentMonth.month;
 
 		this._monthToShow = {
 			month: monthToShow.month,
@@ -27,7 +27,7 @@ class MonthModel extends CalendarModel {
 		};
 
 		this.notifyObservers({
-			isCurrentMonth: isCurrentYear && isCrurentMonth
+			isCurrentMonth: isCurrentYear && isCurrentMonth
 		});
 
 	}

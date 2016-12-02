@@ -9,7 +9,7 @@ describe('Calendar Factory', function () {
 		expect(CalendarFactory).not.toBeNull();
 	});
 
-	it('should create calendar, if options type is passed, otherwise throw error', function () {
+	it('should create calendar, if options.type is passed, otherwise throw error', function () {
 		var cf = new CalendarFactory();
 		var doc = {};
 
