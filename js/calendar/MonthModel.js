@@ -29,7 +29,6 @@ class MonthModel extends CalendarModel {
 		this.notifyObservers({
 			isCurrentMonth: isCurrentYear && isCurrentMonth
 		});
-
 	}
 
 	get monthToShow() {
@@ -41,14 +40,14 @@ class MonthModel extends CalendarModel {
 	}
 
 	get prevMonth() {
-		return this.changeMonth(-1);
+		return this._changeMonth(-1);
 	}
 
 	get nextMonth() {
-		return this.changeMonth(1);
+		return this._changeMonth(1);
 	}
 
-	changeMonth(direction) {
+	_changeMonth(direction) {
 		var monthToShow = this.monthToShow,
 			date = new Date(monthToShow.year, monthToShow.month + direction, 1);
 

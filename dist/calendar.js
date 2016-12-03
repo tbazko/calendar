@@ -243,8 +243,8 @@ var MonthModel = function (_CalendarModel) {
 	}
 
 	_createClass(MonthModel, [{
-		key: 'changeMonth',
-		value: function changeMonth(direction) {
+		key: '_changeMonth',
+		value: function _changeMonth(direction) {
 			var monthToShow = this.monthToShow,
 			    date = new Date(monthToShow.year, monthToShow.month + direction, 1);
 
@@ -302,12 +302,12 @@ var MonthModel = function (_CalendarModel) {
 	}, {
 		key: 'prevMonth',
 		get: function get() {
-			return this.changeMonth(-1);
+			return this._changeMonth(-1);
 		}
 	}, {
 		key: 'nextMonth',
 		get: function get() {
-			return this.changeMonth(1);
+			return this._changeMonth(1);
 		}
 	}, {
 		key: 'allDatesOfWeeks',
