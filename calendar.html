@@ -2,57 +2,57 @@
 <html class="no-js" lang="">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <!-- Place favicon.ico in the root directory -->
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <!-- Place favicon.ico in the root directory -->
 
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!--[if lt IE 8]>
+  <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-    <!-- Add your site or application content here -->
-    <div class="navigation_header_wrapper">
-        <div class="navigation_header_wrapper_left">
-            <div class="navigation_header_month">
-                <span id="calendar_view_descr">Oct 30 – Nov 5, 2016</span>
-                <div class="navigation_header_icons">
-                    <div id="prev_dates_range" class="left_arrow">&lt;</div>
-                    <label id="calendar_trigger" class="calendar-icon" for="calendar_toggle"></label>
-                    <div id="next_dates_range" class="right_arrow">&gt;</div>
-                </div>
-                <input type="checkbox" id="calendar_toggle" class="calendar_toggle">
-                <div class="mvp_calendar" id="mvp_calendar">
-                    <div id="mvp_calendar_month_select" class="mvp_calendar_month_select">
-                        <span id="prev_month" class="left_arrow">&lt;</span>
-                        <span id="calendar_selected_month" class="mvp_calendar_month"></span>
-                        <span id="next_month" class="right_arrow">&gt;</span>
-                    </div>
-                    <button id="calendar_button_today">Today</button>
-                </div>
+  <div class="container">
+    <div class="highlighter">
+      <span id="js-rangeDescription" class="highlighter-rangeDescription">Oct 30 – Nov 5, 2016</span>
+      <div class="highlighter-navigation">
+        <div id="prev-dates-range" class="left-arrow">&lt;</div>
+        <label id="calendar-trigger" class="calendar-icon" for="calendar-toggle"></label>
+        <div id="next-dates-range" class="right-arrow">&gt;</div>
+        <input type="checkbox" id="calendar-toggle" class="calendar-toggle">
+        <div class="calendar" id="mvp-calendar">
+          <div class="calendar-header">
+            <div id="calendar-month-select" class="calendar-monthSelect">
+              <span id="prev-month" class="left-arrow">&lt;</span>
+              <span id="calendar-selected-month" class="calendar-month"></span>
+              <span id="next-month" class="right-arrow">&gt;</span>
             </div>
-            <div class="navigation_header_view">
-                <label for="dropdown_toggle" class="navigation_header_view_type">View: <span id="calendar_view_type">Day</span></label>
-                <input type="checkbox" name="" id="dropdown_toggle" class="dropdown_toggle">
-                <ul class="navigation_header_view_type_list">
-                    <li id="dayView">Day</li>
-                    <li id="weekView">Week</li>
-                    <li id="monthView">Month</li>
-                    <li class="js_lastDaysView" data-days-count="7">Last 7 Days</li>
-                    <li class="js_lastDaysView" data-days-count="28">Last 4 Weeks</li>
-                </ul>
-            </div>
+            <button id="calendar-button-today" class="calendar-button">Today</button>
+          </div>
         </div>
+      </div>
+      <div class="highlighter-state">
+        <label for="dropdown-toggle" class="highlighter-state-type">View: <span id="calendar-view-type">Day</span></label>
+        <input type="checkbox" name="" id="dropdown-toggle" class="dropdown-toggle">
+        <ul class="highlighter-state-type-list">
+          <li id="dayView">Day</li>
+          <li id="weekView">Week</li>
+          <li id="monthView">Month</li>
+          <li class="js-lastDaysView" data-days-count="7">Last 7 Days</li>
+          <li class="js-lastDaysView" data-days-count="28">Last 4 Weeks</li>
+        </ul>
+      </div>
     </div>
-    <script src="dist/bundle.js"></script>
+  </div>
+
+  <script src="dist/bundle.js"></script>
 </body>
 
 </html>

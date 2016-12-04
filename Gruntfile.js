@@ -22,18 +22,18 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		// uglify: {
-		// 	my_target: {
-		// 		files: {
-		// 			'calendar.js': ['js/calendar/*.js'],
-		//			'highlighter.js': ['js/datesHighlighter/*.js'],
-		//			'bundle.js': ['js/index.js', 'js/calendar/*.js', 'js/datesHighlighter/*.js']
-		// 		}
-		// 	}
-		// },
+		uglify: {
+			my_target: {
+				files: {
+					'dist/calendar.js': ['dist/calendar.js'],
+					'dist/highlighter.js': ['dist/highlighter.js'],
+					'dist/bundle.js': ['dist/bundle.js']
+				}
+			}
+		},
 		watch: {
 			css: {
-				files: ['*.scss', 'scss/*.scss'],
+				files: ['*.scss', 'scss/*.scss', 'scss/**/*.scss'],
 				tasks: ['sass', 'autoprefixer'],
 				options: {
 					livereload: true, // needed to run LiveReload
@@ -43,10 +43,6 @@ module.exports = function (grunt) {
 				files: ['./js/*.js', './js/**/*.js'],
 				tasks: ['browserify']
 			}
-			// js: {
-			// 	files: ['js/*.js'],
-			// 	tasks: ['uglify']
-			// }
 		},
 		browserify: {
 			dist: {
@@ -71,7 +67,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-autoprefixer');
 	grunt.loadNpmTasks('grunt-contrib-sass');
-	// grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.registerTask('default', ['watch']);
 	grunt.registerTask('build', ['browserify']);
 }

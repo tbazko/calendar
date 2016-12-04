@@ -1,0 +1,53 @@
+.calendar-content {
+  font-size: 0;
+  text-align: left;
+  width: 300px;
+  background: #fafafa;
+
+  div {
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 14px;
+    display: inline-block;
+    vertical-align: top;
+    padding: 15px 5px;
+    width: calc(100% / 7);
+    font-size: 12px;
+    border: 2px solid transparent;
+  }
+
+  .is-today {
+    border: 2px solid #FFD40A;
+  }
+
+  .is-highlighted-first,
+  .is-highlighted-last {
+    background: #555;
+    border: 2px solid #555;
+    color: #fff;
+
+    &.is-today {
+      border: 2px solid #FFD40A;
+    }
+  }
+
+  .is-highlighted-first ~ div {
+    background: #555;
+    border: 2px solid #555;
+    color: #fff;
+
+    &.is-today {
+      border: 2px solid #FFD40A;
+    }
+  }
+
+  .is-highlighted-last ~ div {
+    background: #fafafa;
+    border: 2px solid transparent;
+    color: #303030;
+
+    &.is-today {
+      border: 2px solid #FFD40A;
+    }
+  }
+}

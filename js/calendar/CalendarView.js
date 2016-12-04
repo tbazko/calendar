@@ -5,11 +5,11 @@ class CalendarView {
 	}
 
 	declareViewElements() {
-		this.calendar = document.getElementById('mvp_calendar');
-		this.nextMonth = document.getElementById('next_month');
-		this.prevMonth = document.getElementById('prev_month');
-		this.calendarSelectedMonth = document.getElementById('calendar_selected_month');
-		this.todayTrigger = document.getElementById('calendar_button_today');
+		this.calendar = document.getElementById('mvp-calendar');
+		this.nextMonth = document.getElementById('next-month');
+		this.prevMonth = document.getElementById('prev-month');
+		this.calendarSelectedMonth = document.getElementById('calendar-selected-month');
+		this.todayTrigger = document.getElementById('calendar-button-today');
 	}
 }
 

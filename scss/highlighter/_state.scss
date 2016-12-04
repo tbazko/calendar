@@ -1,0 +1,25 @@
+.highlighter-state {
+  position: relative;
+  color: #1F75CC;
+  text-align: left;
+}
+
+.highlighter-state-type {
+  cursor: pointer;
+}
+
+.highlighter-state-type-list {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height .2s linear .2s, opacity .2s ease;
+  position: absolute;
+  left: 0;
+  list-style-type: none;
+  width: 150px;
+  text-align: left;
+  margin: 0;
+  padding: 10px 20px;
+  background: #fff;
+  border: 2px solid #303030;
+}

@@ -56,4 +56,21 @@ describe('Calendar Model', function () {
 			isToday: today.getDate === -1
 		}]))
 	});
+
+	it('notify observers when model changes', function () {
+		var monthModel = new MonthModel(),
+			callback1 = jasmine.createSpy('callback1');
+		spyOn(monthModel, 'notifyObservers').and.callThrough();
+
+		monthModel.addObserver(callback1);
+		monthModel.monthToShow = {
+			month: 0,
+			year: 2014
+		}
+		expect(monthModel.notifyObservers).toHaveBeenCalledTimes(1);
+		expect(monthModel.notifyObservers).toHaveBeenCalledWith({
+			isCurrentMonth: false
+		});
+		expect(callback1).toHaveBeenCalledTimes(1);
+	});
 });

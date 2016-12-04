@@ -7,11 +7,11 @@ class HighlighterView {
 		this.dayViewTrigger = document.getElementById('dayView');
 		this.weekViewTrigger = document.getElementById('weekView');
 		this.monthViewTrigger = document.getElementById('monthView');
-		this.lastDaysViewTriggers = document.getElementsByClassName('js_lastDaysView');
-		this.prevDatesRangeTrigger = document.getElementById('prev_dates_range');
-		this.nextDatesRangeTrigger = document.getElementById('next_dates_range');
-		this.rangeDescription = document.getElementById('calendar_view_descr');
-		this.currentStateNameElem = document.getElementById('calendar_view_type');
+		this.lastDaysViewTriggers = document.getElementsByClassName('js-lastDaysView');
+		this.prevDatesRangeTrigger = document.getElementById('prev-dates-range');
+		this.nextDatesRangeTrigger = document.getElementById('next-dates-range');
+		this.rangeDescription = document.getElementById('js-rangeDescription');
+		this.currentStateNameElem = document.getElementById('calendar-view-type');
 	}
 
 	render(target, rangeStr) {

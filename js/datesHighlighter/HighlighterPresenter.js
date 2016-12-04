@@ -26,8 +26,8 @@ class HighlighterPresenter {
 	}
 
 	removeHighlight() {
-		this.calendar.removeClassesOnElements('is_highlighted_first', [this.model.firstDayStamp, this.model.lastDayStamp, this.calendar.model.allDatesOfWeeks[0].timestampUTC]);
-		this.calendar.removeClassesOnElements('is_highlighted_last', [this.model.firstDayStamp, this.model.lastDayStamp]);
+		this.calendar.removeClassesOnElements('is-highlighted-first', [this.model.firstDayStamp, this.model.lastDayStamp, this.calendar.model.allDatesOfWeeks[0].timestampUTC]);
+		this.calendar.removeClassesOnElements('is-highlighted-last', [this.model.firstDayStamp, this.model.lastDayStamp]);
 	}
 
 	highlightCalendar(month) {
@@ -42,16 +42,16 @@ class HighlighterPresenter {
 			lastInViewStamp = allDatesInView[allDatesInView.length - 1].timestampUTC,
 			isLastInCurrentView = this.isDateInCurrentView(last, firstInViewStamp, lastInViewStamp);
 
-		this.calendar.setClassOnElement('is_highlighted_first', first, function noElementFound() {
+		this.calendar.setClassOnElement('is-highlighted-first', first, function noElementFound() {
 			if (this.model.direction === 1) {
 				this.moveToMonthOfStamp(first);
 			} else if (isLastInCurrentView) {
-				this.calendar.setClassOnElement('is_highlighted_first', firstInViewStamp, function () {
+				this.calendar.setClassOnElement('is-highlighted-first', firstInViewStamp, function () {
 					return false;
 				});
 			}
 		}.bind(this));
-		this.calendar.setClassOnElement('is_highlighted_last', last, function noElementFound() {
+		this.calendar.setClassOnElement('is-highlighted-last', last, function noElementFound() {
 			if (this.model.direction === -1) {
 				this.moveToMonthOfStamp(last);
 			}

@@ -1,0 +1,13 @@
+.container {
+  box-sizing: border-box;
+  position: relative;
+  padding: 20px;
+  width: 500px;
+  font-family: 'Andale Mono', Arial, sans-serif;
+  color: #555;
+  font-size: 14px;
+
+  * {
+    box-sizing: border-box;
+  }
+}

@@ -1,0 +1,19 @@
+.calendar-header {
+  background: #444;
+  color: #fff;
+  text-align: left;
+  padding: 15px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calendar-monthSelect {
+  display: inline-block;
+}
+
+.calendar-month {
+  text-align: center;
+  display: inline-block;
+  width: 120px;
+}

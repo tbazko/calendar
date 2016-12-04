@@ -15,7 +15,7 @@ class MonthView extends CalendarView {
 			this.calendar.removeChild(this.calendarContent);
 		}
 		this.calendarContent = this.document.createElement('div');
-		this.calendarContent.setAttribute('class', 'calendar_content');
+		this.calendarContent.setAttribute('class', 'calendar-content');
 		this.calendar.appendChild(this.calendarContent);
 
 		this.calendarContent.appendChild(contentFragment);

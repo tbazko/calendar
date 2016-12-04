@@ -6,29 +6,22 @@ const CalendarPresenter = require('./CalendarPresenter');
 class MonthPresenter extends CalendarPresenter {
 	constructor(document) {
 		super(document);
-		this.model = this.createMonthModel();
-		this.view = this.createMonthView(this.document);
+		this.model = this._createMonthModel();
+		this.view = this._createMonthView(this.document);
 		this.init();
 	}
 
+	// Public functions
 	init() {
 		this.view.declareViewElements();
-		this.bindEvents();
+		this._bindEvents();
 		this._renderView();
-	}
-
-	bindEvents() {
-		this.view.nextMonth.addEventListener('click', this.nextMonth.bind(this), false);
-		this.view.prevMonth.addEventListener('click', this.prevMonth.bind(this), false);
-		this.view.todayTrigger.addEventListener('click', this.currentMonth.bind(this), false);
-		this.model.addObserver(this._renderView.bind(this));
 	}
 
 	currentMonth() {
 		this.model.monthToShow = this.model.currentMonth;
 	}
 
-	// Public functions
 	setClassesOnElements(classesString, idsArray, callback) {
 		for (var i = 0, x = idsArray.length; i < x; i++) {
 			this.view.setClassOnElement(classesString, idsArray[i], callback);
@@ -55,15 +48,30 @@ class MonthPresenter extends CalendarPresenter {
 
 	// Public functions end
 
+	_bindEvents() {
+		this.view.nextMonth.addEventListener('click', this.nextMonth.bind(this), false);
+		this.view.prevMonth.addEventListener('click', this.prevMonth.bind(this), false);
+		this.view.todayTrigger.addEventListener('click', this.currentMonth.bind(this), false);
+		this.model.addObserver(this._renderView.bind(this));
+	}
+
+	_createMonthModel() {
+		return new MonthModel();
+	}
+
+	_createMonthView() {
+		return new MonthView(this.document);
+	}
+
 	_renderView() {
 		var contentFragment = this.document.createDocumentFragment(),
-			contentFragment = this.getShortDayNamesFragment(contentFragment),
-			contentFragment = this.getDatesFragment(contentFragment);
+			contentFragment = this._getShortDayNamesFragment(contentFragment),
+			contentFragment = this._getDatesFragment(contentFragment);
 
 		this.view.render(this.model.monthToShow, contentFragment);
 	}
 
-	getShortDayNamesFragment(fragment) {
+	_getShortDayNamesFragment(fragment) {
 		var dayNames = this.model.getShortDayNames(),
 			child;
 
@@ -76,7 +84,7 @@ class MonthPresenter extends CalendarPresenter {
 		return fragment;
 	}
 
-	getDatesFragment(fragment) {
+	_getDatesFragment(fragment) {
 		var dates = this.model.allDatesOfWeeks,
 			child;
 
@@ -86,21 +94,12 @@ class MonthPresenter extends CalendarPresenter {
 			child.textContent = dates[i].date;
 
 			if (dates[i].isToday) {
-				child.setAttribute('class', 'is_today');
+				child.setAttribute('class', 'is-today');
 			}
 			fragment.appendChild(child);
 		}
 
 		return fragment;
-	}
-
-
-	createMonthModel() {
-		return new MonthModel();
-	}
-
-	createMonthView() {
-		return new MonthView(this.document);
 	}
 }
 

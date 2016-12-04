@@ -25,23 +25,4 @@ describe('Calendar Model', function () {
 	it('return short names of week days in Array', function () {
 		expect(calendarModel.getShortDayNames()).toEqual(['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']);
 	});
-
-	// Maybe needs to sit in MonthModel.spec? What about string/num check?
-	it('notify observers when model changes', function () {
-		var monthModel = new MonthModel(),
-			callback1 = jasmine.createSpy('callback1');
-		spyOn(monthModel, 'notifyObservers').and.callThrough();
-
-		monthModel.addObserver(callback1);
-		monthModel.monthToShow = {
-			month: 0,
-			year: 2014
-		}
-		expect(monthModel.notifyObservers).toHaveBeenCalledTimes(1);
-		expect(monthModel.notifyObservers).toHaveBeenCalledWith({
-			isCurrentMonth: false
-		});
-		expect(callback1).toHaveBeenCalledTimes(1);
-	});
-
 });

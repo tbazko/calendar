@@ -1,0 +1,19 @@
+.dropdown-toggle {
+  display: none;
+}
+
+.dropdown-toggle:checked + .highlighter-state-type-list {
+  max-height: 1000px;
+  opacity: 1;
+  transition: max-height 0s linear, opacity .2s ease .2s;
+}
+
+.highlighter-state-type-list li {
+  cursor: pointer;
+
+  &.is_selected {
+    color: #303030;
+    list-style-type: disc;
+    font-weight: bold;
+  }
+}
