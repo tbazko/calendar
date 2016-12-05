@@ -1,6 +1,5 @@
 'use strict';
 describe('Calendar Factory', function () {
-	'use strict';
 	var CalendarFactory = require('../../js/calendar/CalendarFactory');
 	var MonthPresenter = require('../../js/calendar/MonthPresenter');
 

@@ -38,16 +38,11 @@ class MonthState {
 	}
 
 	_changeDatesRange() {
-		var date,
-			y = this.firstDay.getFullYear(),
+		var y = this.firstDay.getFullYear(),
 			m = this.firstDay.getMonth(),
-			direction = this.model.direction;
-
-		if (direction) {
+			direction = this.model.direction,
 			date = new Date(y, m + direction, 1);
-		} else {
-			date = this.model.today;
-		}
+
 		this._setFirstAndLastDay(date);
 	}
 

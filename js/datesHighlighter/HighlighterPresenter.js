@@ -26,8 +26,8 @@ class HighlighterPresenter {
 	}
 
 	removeHighlight() {
-		this.calendar.removeClassesOnElements('is-highlighted-first', [this.model.firstDayStamp, this.model.lastDayStamp, this.calendar.model.allDatesOfWeeks[0].timestampUTC]);
-		this.calendar.removeClassesOnElements('is-highlighted-last', [this.model.firstDayStamp, this.model.lastDayStamp]);
+		this.calendar.removeClassFromElements('is-highlighted-first', [this.model.firstDayStamp, this.model.lastDayStamp, this.calendar.model.allDatesOfWeeks[0].timestampUTC]);
+		this.calendar.removeClassFromElements('is-highlighted-last', [this.model.firstDayStamp, this.model.lastDayStamp]);
 	}
 
 	highlightCalendar(month) {

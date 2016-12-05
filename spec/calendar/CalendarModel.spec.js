@@ -1,6 +1,5 @@
 'use strict';
 describe('Calendar Model', function () {
-	'use strict';
 	var calendarAPI = require('../../js/calendar/CalendarAPI');
 	var CalendarModel = require('../../js/calendar/CalendarModel');
 	var MonthModel = require('../../js/calendar/MonthModel');

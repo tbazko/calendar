@@ -32,9 +32,9 @@ class MonthPresenter extends CalendarPresenter {
 		this.view.setClassOnElement(classStr, id, callback);
 	}
 
-	removeClassesOnElements(classesString, idsArray) {
+	removeClassFromElements(classString, idsArray) {
 		for (var i = 0, x = idsArray.length; i < x; i++) {
-			this.view.removeClassesOnElement(classesString, idsArray[i]);
+			this.view.removeClassFromElement(classString, idsArray[i]);
 		}
 	}
 
