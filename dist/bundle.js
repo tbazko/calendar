@@ -1199,6 +1199,6 @@ var calendarFactory = new CalendarFactory(),
 	type: 'month'
 });
 
-// datesHighlighter.connectTo(calendar);
+datesHighlighter.connectTo(calendar);
 
 },{"./calendar/CalendarFactory":2,"./datesHighlighter/HighlighterPresenter":10}]},{},[16,1,2,3,4,5,6,7,8,9,10,11]);

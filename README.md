@@ -1,5 +1,5 @@
 # MVP Calendar
-<img src="https://github.com/tbazko/calendar/blob/master/calendar-example.png" width="300">
+<img src="https://github.com/tbazko/calendar/blob/master/calendar-crop.png" width="300">
 
 This is very simple implementation of calendar made with MVP design pattern in mind.
 Features:
@@ -12,5 +12,6 @@ Idea is create a calendar module to which other module (features) can be connect
 Communication done through observer in CalendarModel and some public functions.
 
 ## MVP Calendar highlighter (optional)
-Can be added to calendar to highlight different amount of days in calendar.
+<img src="https://github.com/tbazko/calendar/blob/master/highlighter-crop.png" width="500">
 
+Can be added to calendar to highlight different amount of days in calendar.
