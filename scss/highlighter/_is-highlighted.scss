@@ -1,0 +1,28 @@
+%is-highlighted {
+  background: $is-highighted-bg;
+  border: 2px solid $is-highighted-bg;
+  color: $is-highighted-color;
+
+  &.is-today {
+    border: 2px solid $today-border-color;
+  }
+}
+
+.is-highlighted-first,
+.is-highlighted-last {
+  @extend %is-highlighted;
+}
+
+.is-highlighted-first ~ div {
+  @extend %is-highlighted;
+}
+
+.is-highlighted-last ~ div {
+  background: $isnot-highlighted-bg;
+  border: 2px solid transparent;
+  color: $isnot-highlighted-color;
+
+  &.is-today {
+    border: 2px solid $today-border-color;
+  }
+}

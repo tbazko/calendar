@@ -599,7 +599,7 @@ var HighlighterModel = function () {
 	function HighlighterModel(State) {
 		_classCallCheck(this, HighlighterModel);
 
-		this._currentState = new DayState(this);
+		this._currentState = new State(this);
 		this._direction = 0;
 	}
 

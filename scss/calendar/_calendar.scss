@@ -1,14 +1,3 @@
-$z-stack: base,
-  content,
-  content-overlay,
-  dropdown,
-  calendar;
-
-body, html {
-  margin: 0;
-  padding: 0;
-}
-
 .calendar {
   user-select: none;
   max-height: 0;
@@ -30,6 +19,6 @@ body, html {
     height: 0;
     border-style: solid;
     border-width: 0 7.5px 7px 7.5px;
-    border-color: transparent transparent #444 transparent;
+    border-color: transparent transparent $calendar-header-bg transparent;
   }
 }

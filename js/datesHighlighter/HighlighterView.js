@@ -1,3 +1,4 @@
+'use strict';
 class HighlighterView {
 	constructor(document) {
 		this.document = document;

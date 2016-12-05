@@ -1,3 +1,4 @@
+'use strict';
 const calendarAPI = require('./../../calendar/CalendarAPI');
 
 class DayState {

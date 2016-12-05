@@ -1,3 +1,4 @@
+'use strict';
 const HighlighterModel = require('./HighlighterModel');
 const HighlighterView = require('./HighlighterView');
 const DayState = require('./ModelStates/DayState');

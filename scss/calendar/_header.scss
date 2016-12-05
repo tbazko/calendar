@@ -1,7 +1,7 @@
 .calendar-header {
-  background: #444;
+  background: $calendar-header-bg;
   font-size: 14px;
-  color: #fff;
+  color: $calendar-header-color;
   text-align: left;
   padding: 8px 10px;
   display: flex;

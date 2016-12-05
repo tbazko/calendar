@@ -1,6 +1,6 @@
 .highlighter-state {
   position: relative;
-  color: #1F75CC;
+  color: $highlighter-state-color;
   text-align: left;
 }
 
@@ -20,6 +20,6 @@
   text-align: left;
   margin: 0;
   padding: 10px 20px;
-  background: #fff;
-  border: 2px solid #303030;
+  background: $highlighter-state-list-bg;
+  border: 2px solid $highlighter-state-list-border;
 }

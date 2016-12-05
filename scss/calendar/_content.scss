@@ -2,7 +2,7 @@
   font-size: 0;
   text-align: left;
   width: 300px;
-  background: #fafafa;
+  background: $calendar-content-bg;
 
   div {
     box-sizing: border-box;
@@ -16,51 +16,21 @@
     border: 2px solid transparent;
 
     &:nth-of-type(-n+7) {
-      background: #fff;
-      padding: 6px 5px;
+      background: $calendar-dayNames-bg;
+      padding: 8px 5px;
+      border: 0;
     }
 
     &:nth-of-type(1) {
-      border-left: 2px solid #fafafa;
+      border-left: 2px solid $calendar-content-bg;
     }
 
     &:nth-of-type(7) {
-      border-right: 2px solid #fafafa;
+      border-right: 2px solid $calendar-content-bg;
     }
   }
 
   .is-today {
-    border: 2px solid #FFD40A;
-  }
-
-  .is-highlighted-first,
-  .is-highlighted-last {
-    background: #555;
-    border: 2px solid #555;
-    color: #fff;
-
-    &.is-today {
-      border: 2px solid #FFD40A;
-    }
-  }
-
-  .is-highlighted-first ~ div {
-    background: #555;
-    border: 2px solid #555;
-    color: #fff;
-
-    &.is-today {
-      border: 2px solid #FFD40A;
-    }
-  }
-
-  .is-highlighted-last ~ div {
-    background: #fafafa;
-    border: 2px solid transparent;
-    color: #303030;
-
-    &.is-today {
-      border: 2px solid #FFD40A;
-    }
+    border: 2px solid $today-border-color;
   }
 }

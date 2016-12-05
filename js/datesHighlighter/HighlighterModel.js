@@ -1,9 +1,10 @@
+'use strict';
 const calendarAPI = require('./../calendar/CalendarAPI');
 const DayState = require('./ModelStates/DayState');
 
 class HighlighterModel {
 	constructor(State) {
-		this._currentState = new DayState(this);
+		this._currentState = new State(this);
 		this._direction = 0;
 	}
 
