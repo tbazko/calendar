@@ -1,5 +1,5 @@
 # MVP Calendar
-![alt text](https://github.com/tbazko/calendar/calendar-example.png "Calendar example")
+![Calendar example](https://github.com/tbazko/calendar/blob/master/calendar-example.png "Calendar example")
 
 This is very simple implementation of calendar made with MVP design pattern in mind.
 Features:
