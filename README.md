@@ -1,6 +1,4 @@
 # MVP Calendar
-![Calendar example](https://github.com/tbazko/calendar/blob/master/calendar-example.png =24x48))
-
 This is very simple implementation of calendar made with MVP design pattern in mind.
 Features:
 * Shows one month per view
