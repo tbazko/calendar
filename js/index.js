@@ -8,4 +8,4 @@ let calendarFactory = new CalendarFactory(),
 		type: 'month'
 	});
 
-datesHighlighter.connectTo(calendar);
+// datesHighlighter.connectTo(calendar);
