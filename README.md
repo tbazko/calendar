@@ -11,6 +11,6 @@ Features:
 Idea is create a calendar module to which other module (features) can be connected.
 Communication done through observer in CalendarModel and some public functions.
 
-# MVP Calendar highlighter (optional)
+## MVP Calendar highlighter (optional)
 Can be added to calendar to highlight different amount of days in calendar.
 
