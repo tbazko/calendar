@@ -17,7 +17,7 @@ body, html {
   width: auto;
   position: absolute;
   margin-top: 15px;
-  left: 3px;
+  left: 15px;
   z-index: index($z-stack, calendar);
   transition: max-height .2s linear .2s, opacity .2s ease;
 
@@ -25,7 +25,7 @@ body, html {
     content: '';
     position: absolute;
     bottom: 100%;
-    left: 19px;
+    left: 29px;
     width: 0;
     height: 0;
     border-style: solid;

@@ -1,7 +1,15 @@
 .calendar-button {
   border: 0;
   cursor: pointer;
-  background: #fafafa;
+  background: #FFD40A;
+  color: #444;
   font-size: 12px;
-  padding: 3px 10px;
+  padding: 5px 13px;
+  outline: none;
+  transition: background .2s ease;
+
+  &:hover, &:active {
+    background: lighten(#FFD40A, 18%);
+    transition: background .2s ease;
+  }
 }

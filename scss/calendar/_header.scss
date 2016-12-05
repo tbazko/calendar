@@ -1,8 +1,9 @@
 .calendar-header {
   background: #444;
+  font-size: 14px;
   color: #fff;
   text-align: left;
-  padding: 15px 10px;
+  padding: 8px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -10,10 +11,21 @@
 
 .calendar-monthSelect {
   display: inline-block;
+  margin-left: -10px;
 }
 
 .calendar-month {
   text-align: center;
   display: inline-block;
   width: 120px;
+}
+
+.calendar-header-rightArrow {
+  @extend %calendarArrow;
+  color: #fff;
+}
+
+.calendar-header-leftArrow {
+  @extend %calendarArrow;
+  color: #fff;
 }
